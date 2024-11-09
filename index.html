@@ -1,0 +1,3248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>拆单工具笔记.md</title>
+	<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+	<style>
+		/*
+
+Arduino® Light Theme - Stefania Mellai <s.mellai@arduino.cc>
+
+*/
+
+		.hljs {
+			display: block;
+			overflow-x: auto;
+			padding: 0.5em;
+			background: #FFFFFF;
+		}
+
+		.hljs,
+		.hljs-subst {
+			color: #434f54;
+		}
+
+		.hljs-keyword,
+		.hljs-attribute,
+		.hljs-selector-tag,
+		.hljs-doctag,
+		.hljs-name {
+			color: #00979D;
+		}
+
+		.hljs-built_in,
+		.hljs-literal,
+		.hljs-bullet,
+		.hljs-code,
+		.hljs-addition {
+			color: #D35400;
+		}
+
+		.hljs-regexp,
+		.hljs-symbol,
+		.hljs-variable,
+		.hljs-template-variable,
+		.hljs-link,
+		.hljs-selector-attr,
+		.hljs-selector-pseudo {
+			color: #00979D;
+		}
+
+		.hljs-type,
+		.hljs-string,
+		.hljs-selector-id,
+		.hljs-selector-class,
+		.hljs-quote,
+		.hljs-template-tag,
+		.hljs-deletion {
+			color: #005C5F;
+		}
+
+		.hljs-title,
+		.hljs-section {
+			color: #880000;
+			font-weight: bold;
+		}
+
+		.hljs-comment {
+			color: rgba(149, 165, 166, .8);
+		}
+
+		.hljs-meta-keyword {
+			color: #728E00;
+		}
+
+		.hljs-meta {
+			color: #434f54;
+		}
+
+		.hljs-emphasis {
+			font-style: italic;
+		}
+
+		.hljs-strong {
+			font-weight: bold;
+		}
+
+		.hljs-function {
+			color: #728E00;
+		}
+
+		.hljs-number {
+			color: #8A7B52;
+		}
+	</style>
+
+	<style>
+		/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+		body {
+			font-family: "HelveticaNeue-Light", sans-serif, "宋体", "Segoe WPC", "Segoe UI", "SFUIText-Light", "Droid Sans Fallback";
+			font-size: 18px;
+			padding: 0 12px;
+			line-height: 1.6;
+			word-wrap: break-word;
+			color: #333333;
+		}
+
+		.content-wrapper {
+			max-width: 860px;
+			margin: 0 auto;
+			padding: 0 30px;
+		}
+
+		#code-csp-warning {
+			position: fixed;
+			top: 0;
+			right: 0;
+			color: white;
+			margin: 16px;
+			text-align: center;
+			font-size: 12px;
+			font-family: sans-serif;
+			background-color: #444444;
+			cursor: pointer;
+			padding: 6px;
+			box-shadow: 1px 1px 1px rgba(0, 0, 0, .25);
+		}
+
+		#code-csp-warning:hover {
+			text-decoration: none;
+			background-color: #007acc;
+			box-shadow: 2px 2px 2px rgba(0, 0, 0, .25);
+		}
+
+
+		body.scrollBeyondLastLine {
+			margin-bottom: calc(100vh - 22px);
+		}
+
+		body.showEditorSelection .code-line {
+			position: relative;
+		}
+
+		body.showEditorSelection .code-active-line:before,
+		body.showEditorSelection .code-line:hover:before {
+			content: "";
+			display: block;
+			position: absolute;
+			top: 0;
+			left: -12px;
+			height: 100%;
+		}
+
+		body.showEditorSelection li.code-active-line:before,
+		body.showEditorSelection li.code-line:hover:before {
+			left: -30px;
+		}
+
+		.vscode-light.showEditorSelection .code-active-line:before {
+			border-left: 3px solid rgba(0, 0, 0, 0.15);
+		}
+
+		.vscode-light.showEditorSelection .code-line:hover:before {
+			border-left: 3px solid rgba(0, 0, 0, 0.40);
+		}
+
+		.vscode-dark.showEditorSelection .code-active-line:before {
+			border-left: 3px solid rgba(255, 255, 255, 0.4);
+		}
+
+		.vscode-dark.showEditorSelection .code-line:hover:before {
+			border-left: 3px solid rgba(255, 255, 255, 0.60);
+		}
+
+		.vscode-high-contrast.showEditorSelection .code-active-line:before {
+			border-left: 3px solid rgba(255, 160, 0, 0.7);
+		}
+
+		.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+			border-left: 3px solid rgba(255, 160, 0, 1);
+		}
+
+		img {
+			max-width: 100%;
+			max-height: 100%;
+		}
+
+		a {
+			color: #4080D0;
+			text-decoration: none;
+		}
+
+		a:focus,
+		input:focus,
+		select:focus,
+		textarea:focus {
+			outline: 1px solid -webkit-focus-ring-color;
+			outline-offset: -1px;
+		}
+
+		hr {
+			border: 0;
+			height: 2px;
+			border-bottom: 2px solid;
+		}
+
+		h1 {
+			padding-bottom: 0.3em;
+			line-height: 1.2;
+			border-bottom: 1px solid #eee;
+		}
+
+
+		h2 {
+			padding-bottom: .3em;
+			font-size: 2em;
+			line-height: 1.225;
+			border-bottom: 1px solid #eee;
+		}
+
+		h3 {
+			font-size: 1.75em;
+			line-height: 1.225;
+		}
+
+		h1,
+		h2,
+		h3 {
+			font-weight: bold;
+		}
+
+		h1 code,
+		h2 code,
+		h3 code,
+		h4 code,
+		h5 code,
+		h6 code {
+			font-size: inherit;
+			line-height: auto;
+		}
+
+		a:hover {
+			color: #4080D0;
+			text-decoration: underline;
+		}
+
+		table {
+			border-collapse: collapse;
+		}
+
+		table>thead>tr>th {
+			text-align: left;
+			border-bottom: 1px solid;
+		}
+
+		table>thead>tr>th,
+		table>thead>tr>td,
+		table>tbody>tr>th,
+		table>tbody>tr>td {
+			padding: 5px 10px;
+		}
+
+		table>tbody>tr+tr>td {
+			border-top: 1px solid;
+		}
+
+		blockquote {
+			margin: 0 7px 0 5px;
+			padding: 0 16px 0 10px;
+			border-left: 5px solid;
+		}
+
+		code {
+			font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+			font-size: 14px;
+			line-height: 19px;
+		}
+
+		body.wordWrap pre {
+			white-space: pre-wrap;
+		}
+
+		.mac code {
+			font-size: 12px;
+			line-height: 18px;
+		}
+
+		pre:not(.hljs),
+		pre.hljs code>div {
+			padding: 16px;
+			border-radius: 3px;
+			overflow: auto;
+		}
+
+		/** Theming */
+
+		.vscode-light,
+		.vscode-light pre code {
+			color: rgb(30, 30, 30);
+		}
+
+		.vscode-dark,
+		.vscode-dark pre code {
+			color: #DDD;
+		}
+
+		.vscode-high-contrast,
+		.vscode-high-contrast pre code {
+			color: white;
+		}
+
+		.vscode-light code {
+			color: #A31515;
+		}
+
+		.vscode-dark code {
+			color: #D7BA7D;
+		}
+
+		.vscode-light pre:not(.hljs),
+		.vscode-light code>div {
+			background-color: rgba(220, 220, 220, 0.4);
+		}
+
+		.vscode-dark pre:not(.hljs),
+		.vscode-dark code>div {
+			background-color: rgba(10, 10, 10, 0.4);
+		}
+
+		.vscode-high-contrast pre:not(.hljs),
+		.vscode-high-contrast code>div {
+			background-color: rgb(0, 0, 0);
+		}
+
+		.vscode-high-contrast h1 {
+			border-color: rgb(0, 0, 0);
+		}
+
+		.vscode-light table>thead>tr>th {
+			border-color: rgba(0, 0, 0, 0.69);
+		}
+
+		.vscode-dark table>thead>tr>th {
+			border-color: rgba(255, 255, 255, 0.69);
+		}
+
+		.vscode-light h1,
+		.vscode-light hr,
+		.vscode-light table>tbody>tr+tr>td {
+			border-color: rgba(0, 0, 0, 0.18);
+		}
+
+		.vscode-dark h1,
+		.vscode-dark hr,
+		.vscode-dark table>tbody>tr+tr>td {
+			border-color: rgba(255, 255, 255, 0.18);
+		}
+
+		.vscode-light blockquote,
+		.vscode-dark blockquote {
+			background: rgba(127, 127, 127, 0.1);
+			border-color: rgba(0, 122, 204, 0.5);
+		}
+
+		.vscode-high-contrast blockquote {
+			background: transparent;
+			border-color: #fff;
+		}
+	</style>
+
+	<style>
+		pre {
+			background-color: #f8f8f8;
+			border: 1px solid #cccccc;
+			border-radius: 3px;
+			overflow-x: auto;
+			white-space: pre-wrap;
+			overflow-wrap: break-word;
+		}
+
+		pre:not(.hljs) {
+			padding: 23px;
+			line-height: 19px;
+		}
+
+		blockquote {
+			background: rgba(127, 127, 127, 0.1);
+			border-color: rgba(0, 122, 204, 0.5);
+		}
+
+		.emoji {
+			height: 1.4em;
+		}
+
+		/* for inline code */
+		:not(pre):not(.hljs)>code {
+			color: #C9AE75;
+			/* Change the old color so it seems less like an error */
+			font-size: inherit;
+		}
+
+		/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+		.page {
+			page-break-after: always;
+		}
+
+		.table-of-contents li {
+			list-style-type: initial;
+		}
+	</style>
+
+	<style>
+		@font-face {
+			font-family: KaTeX_AMS;
+			font-style: normal;
+			font-weight: 400;
+			src: url(fonts/KaTeX_AMS-Regular.woff2) format("woff2"), url(fonts/KaTeX_AMS-Regular.woff) format("woff"), url(fonts/KaTeX_AMS-Regular.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Caligraphic;
+			font-style: normal;
+			font-weight: 700;
+			src: url(fonts/KaTeX_Caligraphic-Bold.woff2) format("woff2"), url(fonts/KaTeX_Caligraphic-Bold.woff) format("woff"), url(fonts/KaTeX_Caligraphic-Bold.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Caligraphic;
+			font-style: normal;
+			font-weight: 400;
+			src: url(fonts/KaTeX_Caligraphic-Regular.woff2) format("woff2"), url(fonts/KaTeX_Caligraphic-Regular.woff) format("woff"), url(fonts/KaTeX_Caligraphic-Regular.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Fraktur;
+			font-style: normal;
+			font-weight: 700;
+			src: url(fonts/KaTeX_Fraktur-Bold.woff2) format("woff2"), url(fonts/KaTeX_Fraktur-Bold.woff) format("woff"), url(fonts/KaTeX_Fraktur-Bold.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Fraktur;
+			font-style: normal;
+			font-weight: 400;
+			src: url(fonts/KaTeX_Fraktur-Regular.woff2) format("woff2"), url(fonts/KaTeX_Fraktur-Regular.woff) format("woff"), url(fonts/KaTeX_Fraktur-Regular.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Main;
+			font-style: normal;
+			font-weight: 700;
+			src: url(fonts/KaTeX_Main-Bold.woff2) format("woff2"), url(fonts/KaTeX_Main-Bold.woff) format("woff"), url(fonts/KaTeX_Main-Bold.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Main;
+			font-style: italic;
+			font-weight: 700;
+			src: url(fonts/KaTeX_Main-BoldItalic.woff2) format("woff2"), url(fonts/KaTeX_Main-BoldItalic.woff) format("woff"), url(fonts/KaTeX_Main-BoldItalic.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Main;
+			font-style: italic;
+			font-weight: 400;
+			src: url(fonts/KaTeX_Main-Italic.woff2) format("woff2"), url(fonts/KaTeX_Main-Italic.woff) format("woff"), url(fonts/KaTeX_Main-Italic.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Main;
+			font-style: normal;
+			font-weight: 400;
+			src: url(fonts/KaTeX_Main-Regular.woff2) format("woff2"), url(fonts/KaTeX_Main-Regular.woff) format("woff"), url(fonts/KaTeX_Main-Regular.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Math;
+			font-style: italic;
+			font-weight: 700;
+			src: url(fonts/KaTeX_Math-BoldItalic.woff2) format("woff2"), url(fonts/KaTeX_Math-BoldItalic.woff) format("woff"), url(fonts/KaTeX_Math-BoldItalic.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Math;
+			font-style: italic;
+			font-weight: 400;
+			src: url(fonts/KaTeX_Math-Italic.woff2) format("woff2"), url(fonts/KaTeX_Math-Italic.woff) format("woff"), url(fonts/KaTeX_Math-Italic.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: "KaTeX_SansSerif";
+			font-style: normal;
+			font-weight: 700;
+			src: url(fonts/KaTeX_SansSerif-Bold.woff2) format("woff2"), url(fonts/KaTeX_SansSerif-Bold.woff) format("woff"), url(fonts/KaTeX_SansSerif-Bold.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: "KaTeX_SansSerif";
+			font-style: italic;
+			font-weight: 400;
+			src: url(fonts/KaTeX_SansSerif-Italic.woff2) format("woff2"), url(fonts/KaTeX_SansSerif-Italic.woff) format("woff"), url(fonts/KaTeX_SansSerif-Italic.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: "KaTeX_SansSerif";
+			font-style: normal;
+			font-weight: 400;
+			src: url(fonts/KaTeX_SansSerif-Regular.woff2) format("woff2"), url(fonts/KaTeX_SansSerif-Regular.woff) format("woff"), url(fonts/KaTeX_SansSerif-Regular.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Script;
+			font-style: normal;
+			font-weight: 400;
+			src: url(fonts/KaTeX_Script-Regular.woff2) format("woff2"), url(fonts/KaTeX_Script-Regular.woff) format("woff"), url(fonts/KaTeX_Script-Regular.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Size1;
+			font-style: normal;
+			font-weight: 400;
+			src: url(fonts/KaTeX_Size1-Regular.woff2) format("woff2"), url(fonts/KaTeX_Size1-Regular.woff) format("woff"), url(fonts/KaTeX_Size1-Regular.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Size2;
+			font-style: normal;
+			font-weight: 400;
+			src: url(fonts/KaTeX_Size2-Regular.woff2) format("woff2"), url(fonts/KaTeX_Size2-Regular.woff) format("woff"), url(fonts/KaTeX_Size2-Regular.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Size3;
+			font-style: normal;
+			font-weight: 400;
+			src: url(fonts/KaTeX_Size3-Regular.woff2) format("woff2"), url(fonts/KaTeX_Size3-Regular.woff) format("woff"), url(fonts/KaTeX_Size3-Regular.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Size4;
+			font-style: normal;
+			font-weight: 400;
+			src: url(fonts/KaTeX_Size4-Regular.woff2) format("woff2"), url(fonts/KaTeX_Size4-Regular.woff) format("woff"), url(fonts/KaTeX_Size4-Regular.ttf) format("truetype")
+		}
+
+		@font-face {
+			font-family: KaTeX_Typewriter;
+			font-style: normal;
+			font-weight: 400;
+			src: url(fonts/KaTeX_Typewriter-Regular.woff2) format("woff2"), url(fonts/KaTeX_Typewriter-Regular.woff) format("woff"), url(fonts/KaTeX_Typewriter-Regular.ttf) format("truetype")
+		}
+
+		.katex {
+			text-rendering: auto;
+			font: normal 1.21em KaTeX_Main, Times New Roman, serif;
+			line-height: 1.2;
+			text-indent: 0
+		}
+
+		.katex * {
+			-ms-high-contrast-adjust: none !important;
+			border-color: currentColor
+		}
+
+		.katex .katex-version:after {
+			content: "0.16.2"
+		}
+
+		.katex .katex-mathml {
+			clip: rect(1px, 1px, 1px, 1px);
+			border: 0;
+			height: 1px;
+			overflow: hidden;
+			padding: 0;
+			position: absolute;
+			width: 1px
+		}
+
+		.katex .katex-html>.newline {
+			display: block
+		}
+
+		.katex .base {
+			position: relative;
+			white-space: nowrap;
+			width: -webkit-min-content;
+			width: -moz-min-content;
+			width: min-content
+		}
+
+		.katex .base,
+		.katex .strut {
+			display: inline-block
+		}
+
+		.katex .textbf {
+			font-weight: 700
+		}
+
+		.katex .textit {
+			font-style: italic
+		}
+
+		.katex .textrm {
+			font-family: KaTeX_Main
+		}
+
+		.katex .textsf {
+			font-family: KaTeX_SansSerif
+		}
+
+		.katex .texttt {
+			font-family: KaTeX_Typewriter
+		}
+
+		.katex .mathnormal {
+			font-family: KaTeX_Math;
+			font-style: italic
+		}
+
+		.katex .mathit {
+			font-family: KaTeX_Main;
+			font-style: italic
+		}
+
+		.katex .mathrm {
+			font-style: normal
+		}
+
+		.katex .mathbf {
+			font-family: KaTeX_Main;
+			font-weight: 700
+		}
+
+		.katex .boldsymbol {
+			font-family: KaTeX_Math;
+			font-style: italic;
+			font-weight: 700
+		}
+
+		.katex .amsrm,
+		.katex .mathbb,
+		.katex .textbb {
+			font-family: KaTeX_AMS
+		}
+
+		.katex .mathcal {
+			font-family: KaTeX_Caligraphic
+		}
+
+		.katex .mathfrak,
+		.katex .textfrak {
+			font-family: KaTeX_Fraktur
+		}
+
+		.katex .mathtt {
+			font-family: KaTeX_Typewriter
+		}
+
+		.katex .mathscr,
+		.katex .textscr {
+			font-family: KaTeX_Script
+		}
+
+		.katex .mathsf,
+		.katex .textsf {
+			font-family: KaTeX_SansSerif
+		}
+
+		.katex .mathboldsf,
+		.katex .textboldsf {
+			font-family: KaTeX_SansSerif;
+			font-weight: 700
+		}
+
+		.katex .mathitsf,
+		.katex .textitsf {
+			font-family: KaTeX_SansSerif;
+			font-style: italic
+		}
+
+		.katex .mainrm {
+			font-family: KaTeX_Main;
+			font-style: normal
+		}
+
+		.katex .vlist-t {
+			border-collapse: collapse;
+			display: inline-table;
+			table-layout: fixed
+		}
+
+		.katex .vlist-r {
+			display: table-row
+		}
+
+		.katex .vlist {
+			display: table-cell;
+			position: relative;
+			vertical-align: bottom
+		}
+
+		.katex .vlist>span {
+			display: block;
+			height: 0;
+			position: relative
+		}
+
+		.katex .vlist>span>span {
+			display: inline-block
+		}
+
+		.katex .vlist>span>.pstrut {
+			overflow: hidden;
+			width: 0
+		}
+
+		.katex .vlist-t2 {
+			margin-right: -2px
+		}
+
+		.katex .vlist-s {
+			display: table-cell;
+			font-size: 1px;
+			min-width: 2px;
+			vertical-align: bottom;
+			width: 2px
+		}
+
+		.katex .vbox {
+			align-items: baseline;
+			display: inline-flex;
+			flex-direction: column
+		}
+
+		.katex .hbox {
+			width: 100%
+		}
+
+		.katex .hbox,
+		.katex .thinbox {
+			display: inline-flex;
+			flex-direction: row
+		}
+
+		.katex .thinbox {
+			max-width: 0;
+			width: 0
+		}
+
+		.katex .msupsub {
+			text-align: left
+		}
+
+		.katex .mfrac>span>span {
+			text-align: center
+		}
+
+		.katex .mfrac .frac-line {
+			border-bottom-style: solid;
+			display: inline-block;
+			width: 100%
+		}
+
+		.katex .hdashline,
+		.katex .hline,
+		.katex .mfrac .frac-line,
+		.katex .overline .overline-line,
+		.katex .rule,
+		.katex .underline .underline-line {
+			min-height: 1px
+		}
+
+		.katex .mspace {
+			display: inline-block
+		}
+
+		.katex .clap,
+		.katex .llap,
+		.katex .rlap {
+			position: relative;
+			width: 0
+		}
+
+		.katex .clap>.inner,
+		.katex .llap>.inner,
+		.katex .rlap>.inner {
+			position: absolute
+		}
+
+		.katex .clap>.fix,
+		.katex .llap>.fix,
+		.katex .rlap>.fix {
+			display: inline-block
+		}
+
+		.katex .llap>.inner {
+			right: 0
+		}
+
+		.katex .clap>.inner,
+		.katex .rlap>.inner {
+			left: 0
+		}
+
+		.katex .clap>.inner>span {
+			margin-left: -50%;
+			margin-right: 50%
+		}
+
+		.katex .rule {
+			border: 0 solid;
+			display: inline-block;
+			position: relative
+		}
+
+		.katex .hline,
+		.katex .overline .overline-line,
+		.katex .underline .underline-line {
+			border-bottom-style: solid;
+			display: inline-block;
+			width: 100%
+		}
+
+		.katex .hdashline {
+			border-bottom-style: dashed;
+			display: inline-block;
+			width: 100%
+		}
+
+		.katex .sqrt>.root {
+			margin-left: .27777778em;
+			margin-right: -.55555556em
+		}
+
+		.katex .fontsize-ensurer.reset-size1.size1,
+		.katex .sizing.reset-size1.size1 {
+			font-size: 1em
+		}
+
+		.katex .fontsize-ensurer.reset-size1.size2,
+		.katex .sizing.reset-size1.size2 {
+			font-size: 1.2em
+		}
+
+		.katex .fontsize-ensurer.reset-size1.size3,
+		.katex .sizing.reset-size1.size3 {
+			font-size: 1.4em
+		}
+
+		.katex .fontsize-ensurer.reset-size1.size4,
+		.katex .sizing.reset-size1.size4 {
+			font-size: 1.6em
+		}
+
+		.katex .fontsize-ensurer.reset-size1.size5,
+		.katex .sizing.reset-size1.size5 {
+			font-size: 1.8em
+		}
+
+		.katex .fontsize-ensurer.reset-size1.size6,
+		.katex .sizing.reset-size1.size6 {
+			font-size: 2em
+		}
+
+		.katex .fontsize-ensurer.reset-size1.size7,
+		.katex .sizing.reset-size1.size7 {
+			font-size: 2.4em
+		}
+
+		.katex .fontsize-ensurer.reset-size1.size8,
+		.katex .sizing.reset-size1.size8 {
+			font-size: 2.88em
+		}
+
+		.katex .fontsize-ensurer.reset-size1.size9,
+		.katex .sizing.reset-size1.size9 {
+			font-size: 3.456em
+		}
+
+		.katex .fontsize-ensurer.reset-size1.size10,
+		.katex .sizing.reset-size1.size10 {
+			font-size: 4.148em
+		}
+
+		.katex .fontsize-ensurer.reset-size1.size11,
+		.katex .sizing.reset-size1.size11 {
+			font-size: 4.976em
+		}
+
+		.katex .fontsize-ensurer.reset-size2.size1,
+		.katex .sizing.reset-size2.size1 {
+			font-size: .83333333em
+		}
+
+		.katex .fontsize-ensurer.reset-size2.size2,
+		.katex .sizing.reset-size2.size2 {
+			font-size: 1em
+		}
+
+		.katex .fontsize-ensurer.reset-size2.size3,
+		.katex .sizing.reset-size2.size3 {
+			font-size: 1.16666667em
+		}
+
+		.katex .fontsize-ensurer.reset-size2.size4,
+		.katex .sizing.reset-size2.size4 {
+			font-size: 1.33333333em
+		}
+
+		.katex .fontsize-ensurer.reset-size2.size5,
+		.katex .sizing.reset-size2.size5 {
+			font-size: 1.5em
+		}
+
+		.katex .fontsize-ensurer.reset-size2.size6,
+		.katex .sizing.reset-size2.size6 {
+			font-size: 1.66666667em
+		}
+
+		.katex .fontsize-ensurer.reset-size2.size7,
+		.katex .sizing.reset-size2.size7 {
+			font-size: 2em
+		}
+
+		.katex .fontsize-ensurer.reset-size2.size8,
+		.katex .sizing.reset-size2.size8 {
+			font-size: 2.4em
+		}
+
+		.katex .fontsize-ensurer.reset-size2.size9,
+		.katex .sizing.reset-size2.size9 {
+			font-size: 2.88em
+		}
+
+		.katex .fontsize-ensurer.reset-size2.size10,
+		.katex .sizing.reset-size2.size10 {
+			font-size: 3.45666667em
+		}
+
+		.katex .fontsize-ensurer.reset-size2.size11,
+		.katex .sizing.reset-size2.size11 {
+			font-size: 4.14666667em
+		}
+
+		.katex .fontsize-ensurer.reset-size3.size1,
+		.katex .sizing.reset-size3.size1 {
+			font-size: .71428571em
+		}
+
+		.katex .fontsize-ensurer.reset-size3.size2,
+		.katex .sizing.reset-size3.size2 {
+			font-size: .85714286em
+		}
+
+		.katex .fontsize-ensurer.reset-size3.size3,
+		.katex .sizing.reset-size3.size3 {
+			font-size: 1em
+		}
+
+		.katex .fontsize-ensurer.reset-size3.size4,
+		.katex .sizing.reset-size3.size4 {
+			font-size: 1.14285714em
+		}
+
+		.katex .fontsize-ensurer.reset-size3.size5,
+		.katex .sizing.reset-size3.size5 {
+			font-size: 1.28571429em
+		}
+
+		.katex .fontsize-ensurer.reset-size3.size6,
+		.katex .sizing.reset-size3.size6 {
+			font-size: 1.42857143em
+		}
+
+		.katex .fontsize-ensurer.reset-size3.size7,
+		.katex .sizing.reset-size3.size7 {
+			font-size: 1.71428571em
+		}
+
+		.katex .fontsize-ensurer.reset-size3.size8,
+		.katex .sizing.reset-size3.size8 {
+			font-size: 2.05714286em
+		}
+
+		.katex .fontsize-ensurer.reset-size3.size9,
+		.katex .sizing.reset-size3.size9 {
+			font-size: 2.46857143em
+		}
+
+		.katex .fontsize-ensurer.reset-size3.size10,
+		.katex .sizing.reset-size3.size10 {
+			font-size: 2.96285714em
+		}
+
+		.katex .fontsize-ensurer.reset-size3.size11,
+		.katex .sizing.reset-size3.size11 {
+			font-size: 3.55428571em
+		}
+
+		.katex .fontsize-ensurer.reset-size4.size1,
+		.katex .sizing.reset-size4.size1 {
+			font-size: .625em
+		}
+
+		.katex .fontsize-ensurer.reset-size4.size2,
+		.katex .sizing.reset-size4.size2 {
+			font-size: .75em
+		}
+
+		.katex .fontsize-ensurer.reset-size4.size3,
+		.katex .sizing.reset-size4.size3 {
+			font-size: .875em
+		}
+
+		.katex .fontsize-ensurer.reset-size4.size4,
+		.katex .sizing.reset-size4.size4 {
+			font-size: 1em
+		}
+
+		.katex .fontsize-ensurer.reset-size4.size5,
+		.katex .sizing.reset-size4.size5 {
+			font-size: 1.125em
+		}
+
+		.katex .fontsize-ensurer.reset-size4.size6,
+		.katex .sizing.reset-size4.size6 {
+			font-size: 1.25em
+		}
+
+		.katex .fontsize-ensurer.reset-size4.size7,
+		.katex .sizing.reset-size4.size7 {
+			font-size: 1.5em
+		}
+
+		.katex .fontsize-ensurer.reset-size4.size8,
+		.katex .sizing.reset-size4.size8 {
+			font-size: 1.8em
+		}
+
+		.katex .fontsize-ensurer.reset-size4.size9,
+		.katex .sizing.reset-size4.size9 {
+			font-size: 2.16em
+		}
+
+		.katex .fontsize-ensurer.reset-size4.size10,
+		.katex .sizing.reset-size4.size10 {
+			font-size: 2.5925em
+		}
+
+		.katex .fontsize-ensurer.reset-size4.size11,
+		.katex .sizing.reset-size4.size11 {
+			font-size: 3.11em
+		}
+
+		.katex .fontsize-ensurer.reset-size5.size1,
+		.katex .sizing.reset-size5.size1 {
+			font-size: .55555556em
+		}
+
+		.katex .fontsize-ensurer.reset-size5.size2,
+		.katex .sizing.reset-size5.size2 {
+			font-size: .66666667em
+		}
+
+		.katex .fontsize-ensurer.reset-size5.size3,
+		.katex .sizing.reset-size5.size3 {
+			font-size: .77777778em
+		}
+
+		.katex .fontsize-ensurer.reset-size5.size4,
+		.katex .sizing.reset-size5.size4 {
+			font-size: .88888889em
+		}
+
+		.katex .fontsize-ensurer.reset-size5.size5,
+		.katex .sizing.reset-size5.size5 {
+			font-size: 1em
+		}
+
+		.katex .fontsize-ensurer.reset-size5.size6,
+		.katex .sizing.reset-size5.size6 {
+			font-size: 1.11111111em
+		}
+
+		.katex .fontsize-ensurer.reset-size5.size7,
+		.katex .sizing.reset-size5.size7 {
+			font-size: 1.33333333em
+		}
+
+		.katex .fontsize-ensurer.reset-size5.size8,
+		.katex .sizing.reset-size5.size8 {
+			font-size: 1.6em
+		}
+
+		.katex .fontsize-ensurer.reset-size5.size9,
+		.katex .sizing.reset-size5.size9 {
+			font-size: 1.92em
+		}
+
+		.katex .fontsize-ensurer.reset-size5.size10,
+		.katex .sizing.reset-size5.size10 {
+			font-size: 2.30444444em
+		}
+
+		.katex .fontsize-ensurer.reset-size5.size11,
+		.katex .sizing.reset-size5.size11 {
+			font-size: 2.76444444em
+		}
+
+		.katex .fontsize-ensurer.reset-size6.size1,
+		.katex .sizing.reset-size6.size1 {
+			font-size: .5em
+		}
+
+		.katex .fontsize-ensurer.reset-size6.size2,
+		.katex .sizing.reset-size6.size2 {
+			font-size: .6em
+		}
+
+		.katex .fontsize-ensurer.reset-size6.size3,
+		.katex .sizing.reset-size6.size3 {
+			font-size: .7em
+		}
+
+		.katex .fontsize-ensurer.reset-size6.size4,
+		.katex .sizing.reset-size6.size4 {
+			font-size: .8em
+		}
+
+		.katex .fontsize-ensurer.reset-size6.size5,
+		.katex .sizing.reset-size6.size5 {
+			font-size: .9em
+		}
+
+		.katex .fontsize-ensurer.reset-size6.size6,
+		.katex .sizing.reset-size6.size6 {
+			font-size: 1em
+		}
+
+		.katex .fontsize-ensurer.reset-size6.size7,
+		.katex .sizing.reset-size6.size7 {
+			font-size: 1.2em
+		}
+
+		.katex .fontsize-ensurer.reset-size6.size8,
+		.katex .sizing.reset-size6.size8 {
+			font-size: 1.44em
+		}
+
+		.katex .fontsize-ensurer.reset-size6.size9,
+		.katex .sizing.reset-size6.size9 {
+			font-size: 1.728em
+		}
+
+		.katex .fontsize-ensurer.reset-size6.size10,
+		.katex .sizing.reset-size6.size10 {
+			font-size: 2.074em
+		}
+
+		.katex .fontsize-ensurer.reset-size6.size11,
+		.katex .sizing.reset-size6.size11 {
+			font-size: 2.488em
+		}
+
+		.katex .fontsize-ensurer.reset-size7.size1,
+		.katex .sizing.reset-size7.size1 {
+			font-size: .41666667em
+		}
+
+		.katex .fontsize-ensurer.reset-size7.size2,
+		.katex .sizing.reset-size7.size2 {
+			font-size: .5em
+		}
+
+		.katex .fontsize-ensurer.reset-size7.size3,
+		.katex .sizing.reset-size7.size3 {
+			font-size: .58333333em
+		}
+
+		.katex .fontsize-ensurer.reset-size7.size4,
+		.katex .sizing.reset-size7.size4 {
+			font-size: .66666667em
+		}
+
+		.katex .fontsize-ensurer.reset-size7.size5,
+		.katex .sizing.reset-size7.size5 {
+			font-size: .75em
+		}
+
+		.katex .fontsize-ensurer.reset-size7.size6,
+		.katex .sizing.reset-size7.size6 {
+			font-size: .83333333em
+		}
+
+		.katex .fontsize-ensurer.reset-size7.size7,
+		.katex .sizing.reset-size7.size7 {
+			font-size: 1em
+		}
+
+		.katex .fontsize-ensurer.reset-size7.size8,
+		.katex .sizing.reset-size7.size8 {
+			font-size: 1.2em
+		}
+
+		.katex .fontsize-ensurer.reset-size7.size9,
+		.katex .sizing.reset-size7.size9 {
+			font-size: 1.44em
+		}
+
+		.katex .fontsize-ensurer.reset-size7.size10,
+		.katex .sizing.reset-size7.size10 {
+			font-size: 1.72833333em
+		}
+
+		.katex .fontsize-ensurer.reset-size7.size11,
+		.katex .sizing.reset-size7.size11 {
+			font-size: 2.07333333em
+		}
+
+		.katex .fontsize-ensurer.reset-size8.size1,
+		.katex .sizing.reset-size8.size1 {
+			font-size: .34722222em
+		}
+
+		.katex .fontsize-ensurer.reset-size8.size2,
+		.katex .sizing.reset-size8.size2 {
+			font-size: .41666667em
+		}
+
+		.katex .fontsize-ensurer.reset-size8.size3,
+		.katex .sizing.reset-size8.size3 {
+			font-size: .48611111em
+		}
+
+		.katex .fontsize-ensurer.reset-size8.size4,
+		.katex .sizing.reset-size8.size4 {
+			font-size: .55555556em
+		}
+
+		.katex .fontsize-ensurer.reset-size8.size5,
+		.katex .sizing.reset-size8.size5 {
+			font-size: .625em
+		}
+
+		.katex .fontsize-ensurer.reset-size8.size6,
+		.katex .sizing.reset-size8.size6 {
+			font-size: .69444444em
+		}
+
+		.katex .fontsize-ensurer.reset-size8.size7,
+		.katex .sizing.reset-size8.size7 {
+			font-size: .83333333em
+		}
+
+		.katex .fontsize-ensurer.reset-size8.size8,
+		.katex .sizing.reset-size8.size8 {
+			font-size: 1em
+		}
+
+		.katex .fontsize-ensurer.reset-size8.size9,
+		.katex .sizing.reset-size8.size9 {
+			font-size: 1.2em
+		}
+
+		.katex .fontsize-ensurer.reset-size8.size10,
+		.katex .sizing.reset-size8.size10 {
+			font-size: 1.44027778em
+		}
+
+		.katex .fontsize-ensurer.reset-size8.size11,
+		.katex .sizing.reset-size8.size11 {
+			font-size: 1.72777778em
+		}
+
+		.katex .fontsize-ensurer.reset-size9.size1,
+		.katex .sizing.reset-size9.size1 {
+			font-size: .28935185em
+		}
+
+		.katex .fontsize-ensurer.reset-size9.size2,
+		.katex .sizing.reset-size9.size2 {
+			font-size: .34722222em
+		}
+
+		.katex .fontsize-ensurer.reset-size9.size3,
+		.katex .sizing.reset-size9.size3 {
+			font-size: .40509259em
+		}
+
+		.katex .fontsize-ensurer.reset-size9.size4,
+		.katex .sizing.reset-size9.size4 {
+			font-size: .46296296em
+		}
+
+		.katex .fontsize-ensurer.reset-size9.size5,
+		.katex .sizing.reset-size9.size5 {
+			font-size: .52083333em
+		}
+
+		.katex .fontsize-ensurer.reset-size9.size6,
+		.katex .sizing.reset-size9.size6 {
+			font-size: .5787037em
+		}
+
+		.katex .fontsize-ensurer.reset-size9.size7,
+		.katex .sizing.reset-size9.size7 {
+			font-size: .69444444em
+		}
+
+		.katex .fontsize-ensurer.reset-size9.size8,
+		.katex .sizing.reset-size9.size8 {
+			font-size: .83333333em
+		}
+
+		.katex .fontsize-ensurer.reset-size9.size9,
+		.katex .sizing.reset-size9.size9 {
+			font-size: 1em
+		}
+
+		.katex .fontsize-ensurer.reset-size9.size10,
+		.katex .sizing.reset-size9.size10 {
+			font-size: 1.20023148em
+		}
+
+		.katex .fontsize-ensurer.reset-size9.size11,
+		.katex .sizing.reset-size9.size11 {
+			font-size: 1.43981481em
+		}
+
+		.katex .fontsize-ensurer.reset-size10.size1,
+		.katex .sizing.reset-size10.size1 {
+			font-size: .24108004em
+		}
+
+		.katex .fontsize-ensurer.reset-size10.size2,
+		.katex .sizing.reset-size10.size2 {
+			font-size: .28929605em
+		}
+
+		.katex .fontsize-ensurer.reset-size10.size3,
+		.katex .sizing.reset-size10.size3 {
+			font-size: .33751205em
+		}
+
+		.katex .fontsize-ensurer.reset-size10.size4,
+		.katex .sizing.reset-size10.size4 {
+			font-size: .38572806em
+		}
+
+		.katex .fontsize-ensurer.reset-size10.size5,
+		.katex .sizing.reset-size10.size5 {
+			font-size: .43394407em
+		}
+
+		.katex .fontsize-ensurer.reset-size10.size6,
+		.katex .sizing.reset-size10.size6 {
+			font-size: .48216008em
+		}
+
+		.katex .fontsize-ensurer.reset-size10.size7,
+		.katex .sizing.reset-size10.size7 {
+			font-size: .57859209em
+		}
+
+		.katex .fontsize-ensurer.reset-size10.size8,
+		.katex .sizing.reset-size10.size8 {
+			font-size: .69431051em
+		}
+
+		.katex .fontsize-ensurer.reset-size10.size9,
+		.katex .sizing.reset-size10.size9 {
+			font-size: .83317261em
+		}
+
+		.katex .fontsize-ensurer.reset-size10.size10,
+		.katex .sizing.reset-size10.size10 {
+			font-size: 1em
+		}
+
+		.katex .fontsize-ensurer.reset-size10.size11,
+		.katex .sizing.reset-size10.size11 {
+			font-size: 1.19961427em
+		}
+
+		.katex .fontsize-ensurer.reset-size11.size1,
+		.katex .sizing.reset-size11.size1 {
+			font-size: .20096463em
+		}
+
+		.katex .fontsize-ensurer.reset-size11.size2,
+		.katex .sizing.reset-size11.size2 {
+			font-size: .24115756em
+		}
+
+		.katex .fontsize-ensurer.reset-size11.size3,
+		.katex .sizing.reset-size11.size3 {
+			font-size: .28135048em
+		}
+
+		.katex .fontsize-ensurer.reset-size11.size4,
+		.katex .sizing.reset-size11.size4 {
+			font-size: .32154341em
+		}
+
+		.katex .fontsize-ensurer.reset-size11.size5,
+		.katex .sizing.reset-size11.size5 {
+			font-size: .36173633em
+		}
+
+		.katex .fontsize-ensurer.reset-size11.size6,
+		.katex .sizing.reset-size11.size6 {
+			font-size: .40192926em
+		}
+
+		.katex .fontsize-ensurer.reset-size11.size7,
+		.katex .sizing.reset-size11.size7 {
+			font-size: .48231511em
+		}
+
+		.katex .fontsize-ensurer.reset-size11.size8,
+		.katex .sizing.reset-size11.size8 {
+			font-size: .57877814em
+		}
+
+		.katex .fontsize-ensurer.reset-size11.size9,
+		.katex .sizing.reset-size11.size9 {
+			font-size: .69453376em
+		}
+
+		.katex .fontsize-ensurer.reset-size11.size10,
+		.katex .sizing.reset-size11.size10 {
+			font-size: .83360129em
+		}
+
+		.katex .fontsize-ensurer.reset-size11.size11,
+		.katex .sizing.reset-size11.size11 {
+			font-size: 1em
+		}
+
+		.katex .delimsizing.size1 {
+			font-family: KaTeX_Size1
+		}
+
+		.katex .delimsizing.size2 {
+			font-family: KaTeX_Size2
+		}
+
+		.katex .delimsizing.size3 {
+			font-family: KaTeX_Size3
+		}
+
+		.katex .delimsizing.size4 {
+			font-family: KaTeX_Size4
+		}
+
+		.katex .delimsizing.mult .delim-size1>span {
+			font-family: KaTeX_Size1
+		}
+
+		.katex .delimsizing.mult .delim-size4>span {
+			font-family: KaTeX_Size4
+		}
+
+		.katex .nulldelimiter {
+			display: inline-block;
+			width: .12em
+		}
+
+		.katex .delimcenter,
+		.katex .op-symbol {
+			position: relative
+		}
+
+		.katex .op-symbol.small-op {
+			font-family: KaTeX_Size1
+		}
+
+		.katex .op-symbol.large-op {
+			font-family: KaTeX_Size2
+		}
+
+		.katex .accent>.vlist-t,
+		.katex .op-limits>.vlist-t {
+			text-align: center
+		}
+
+		.katex .accent .accent-body {
+			position: relative
+		}
+
+		.katex .accent .accent-body:not(.accent-full) {
+			width: 0
+		}
+
+		.katex .overlay {
+			display: block
+		}
+
+		.katex .mtable .vertical-separator {
+			display: inline-block;
+			min-width: 1px
+		}
+
+		.katex .mtable .arraycolsep {
+			display: inline-block
+		}
+
+		.katex .mtable .col-align-c>.vlist-t {
+			text-align: center
+		}
+
+		.katex .mtable .col-align-l>.vlist-t {
+			text-align: left
+		}
+
+		.katex .mtable .col-align-r>.vlist-t {
+			text-align: right
+		}
+
+		.katex .svg-align {
+			text-align: left
+		}
+
+		.katex svg {
+			fill: currentColor;
+			stroke: currentColor;
+			fill-rule: nonzero;
+			fill-opacity: 1;
+			stroke-width: 1;
+			stroke-linecap: butt;
+			stroke-linejoin: miter;
+			stroke-miterlimit: 4;
+			stroke-dasharray: none;
+			stroke-dashoffset: 0;
+			stroke-opacity: 1;
+			display: block;
+			height: inherit;
+			position: absolute;
+			width: 100%
+		}
+
+		.katex svg path {
+			stroke: none
+		}
+
+		.katex img {
+			border-style: none;
+			max-height: none;
+			max-width: none;
+			min-height: 0;
+			min-width: 0
+		}
+
+		.katex .stretchy {
+			display: block;
+			overflow: hidden;
+			position: relative;
+			width: 100%
+		}
+
+		.katex .stretchy:after,
+		.katex .stretchy:before {
+			content: ""
+		}
+
+		.katex .hide-tail {
+			overflow: hidden;
+			position: relative;
+			width: 100%
+		}
+
+		.katex .halfarrow-left {
+			left: 0;
+			overflow: hidden;
+			position: absolute;
+			width: 50.2%
+		}
+
+		.katex .halfarrow-right {
+			overflow: hidden;
+			position: absolute;
+			right: 0;
+			width: 50.2%
+		}
+
+		.katex .brace-left {
+			left: 0;
+			overflow: hidden;
+			position: absolute;
+			width: 25.1%
+		}
+
+		.katex .brace-center {
+			left: 25%;
+			overflow: hidden;
+			position: absolute;
+			width: 50%
+		}
+
+		.katex .brace-right {
+			overflow: hidden;
+			position: absolute;
+			right: 0;
+			width: 25.1%
+		}
+
+		.katex .x-arrow-pad {
+			padding: 0 .5em
+		}
+
+		.katex .cd-arrow-pad {
+			padding: 0 .55556em 0 .27778em
+		}
+
+		.katex .mover,
+		.katex .munder,
+		.katex .x-arrow {
+			text-align: center
+		}
+
+		.katex .boxpad {
+			padding: 0 .3em
+		}
+
+		.katex .fbox,
+		.katex .fcolorbox {
+			border: .04em solid;
+			box-sizing: border-box
+		}
+
+		.katex .cancel-pad {
+			padding: 0 .2em
+		}
+
+		.katex .cancel-lap {
+			margin-left: -.2em;
+			margin-right: -.2em
+		}
+
+		.katex .sout {
+			border-bottom-style: solid;
+			border-bottom-width: .08em
+		}
+
+		.katex .angl {
+			border-right: .049em solid;
+			border-top: .049em solid;
+			box-sizing: border-box;
+			margin-right: .03889em
+		}
+
+		.katex .anglpad {
+			padding: 0 .03889em
+		}
+
+		.katex .eqn-num:before {
+			content: "(" counter(katexEqnNo) ")";
+			counter-increment: katexEqnNo
+		}
+
+		.katex .mml-eqn-num:before {
+			content: "(" counter(mmlEqnNo) ")";
+			counter-increment: mmlEqnNo
+		}
+
+		.katex .mtr-glue {
+			width: 50%
+		}
+
+		.katex .cd-vert-arrow {
+			display: inline-block;
+			position: relative
+		}
+
+		.katex .cd-label-left {
+			display: inline-block;
+			position: absolute;
+			right: calc(50% + .3em);
+			text-align: left
+		}
+
+		.katex .cd-label-right {
+			display: inline-block;
+			left: calc(50% + .3em);
+			position: absolute;
+			text-align: right
+		}
+
+		.katex-display {
+			display: block;
+			margin: 1em 0;
+			text-align: center
+		}
+
+		.katex-display>.katex {
+			display: block;
+			text-align: center;
+			white-space: nowrap
+		}
+
+		.katex-display>.katex>.katex-html {
+			display: block;
+			position: relative
+		}
+
+		.katex-display>.katex>.katex-html>.tag {
+			position: absolute;
+			right: 0
+		}
+
+		.katex-display.leqno>.katex>.katex-html>.tag {
+			left: 0;
+			right: auto
+		}
+
+		.katex-display.fleqn>.katex {
+			padding-left: 2em;
+			text-align: left
+		}
+
+		body {
+			counter-reset: katexEqnNo mmlEqnNo
+		}
+	</style>
+	<style id="mine">
+		main {
+
+			& h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6 {
+				/* background-color: rgba(47, 117, 126, 0.637); */
+				padding-left: 6px;
+				padding: .2em;
+				font-family: Arial, Helvetica, sans-serif;
+				color: rgba(9, 17, 34, 0.637);
+				margin-top: 80px;
+			}
+
+			& h1::after {
+				content: " H1";
+				color: #5f87a15b;
+			}
+
+			& div#maintitle {
+				background-color: none !important;
+				font-size: 2.4em;
+				margin-top: 2px;
+				font-weight: 900;
+			}
+
+			#moddate {
+				padding-top: 40px;
+				font-size: medium;
+				font-weight: 500;
+				color: #C9AE75;
+
+			}
+
+			& h2::after {
+				content: " H2";
+				color: #5f87a15b;
+			}
+
+			& h3::after {
+				content: " H3";
+				color: #5f87a15b;
+			}
+
+			& h4::after {
+				content: " H4";
+				color: #5f87a15b;
+			}
+
+			& h5::after {
+				content: " H5";
+				color: #5f87a15b;
+			}
+
+			& h6::after {
+				content: " H6";
+				color: #5f87a15b;
+			}
+
+			& h1 {
+				background-color: rgba(50, 123, 126, 1) !important;
+			}
+
+			& h2 {
+				background-color: rgba(50, 123, 126, 0.937) !important;
+			}
+
+			& h3 {
+				background-color: rgba(50, 123, 126, 0.737) !important;
+			}
+
+			& h4 {
+				background-color: rgba(50, 123, 126, 0.637) !important;
+				font-size: 1em;
+			}
+
+			& h5 {
+				background-color: rgba(50, 123, 126, 0.337) !important;
+				font-size: 1em;
+			}
+
+			& h6 {
+				background-color: rgba(50, 123, 126, 0.137) !important;
+				font-size: 1em;
+			}
+
+			& p {
+				color: #657879;
+				font-weight: 700;
+				font-family: Georgia, 'Times New Roman', Times, serif;
+			}
+		}
+
+		.TOC:hover {
+			right: 0px;
+			background-color: #181d1b;
+			& a {
+				color: #e3d488;
+				font-weight: 900;
+			}
+			& li::before {
+				content: "-";
+				color: #e3d488;
+			}
+			transition: all .5s;
+		}
+
+		.TOC {
+			/* opacity: 0.8; */
+			z-index: 888;
+			border-radius: .2em;
+
+			position: fixed;
+			top: 10px;
+			right: -220px;
+			height: 300px;
+			overflow-y: scroll;
+
+			font-size: 12px;
+			
+
+
+
+			padding: 0;
+			transition: right .5s;
+			& a {
+				color: #e3d48800;
+				font-weight: 900;
+			}
+			& li::before {
+				content: "-";
+				color: #e3d48800;
+			}
+
+			&>ul>li {
+				top: 0;
+				left: 0;
+				margin-left: 0px;
+				margin-top:4em ;
+			}
+
+			& li {
+				margin-left: 0px;
+				list-style: none;
+				padding-left: 0;
+				display: block;
+
+				& ul {
+					margin-left: 4px;
+					padding-left: 4px;
+				}
+			}
+
+
+		}
+
+		.TOChead {
+			background-color: #738bb9;
+			text-align: right;
+			width: 80%;
+			height: fit-content;
+			padding-right: 12px;
+			margin: 0;
+			margin-left: -168px;
+			margin-top: -2em;
+			/* margin-top: 2em; */
+			font-size: 20px;
+			position: sticky;
+			top: 0;
+			/* left: -120px; */
+			border-radius: .2em;
+			;
+
+		}
+
+
+
+		img {
+			max-width: 100%;
+			max-height: 300px;
+		}
+
+		code {
+			padding: .2em;
+			font-family: Arial, Helvetica, sans-serif;
+		}
+
+		html {
+			scroll-behavior: smooth;
+			background-color: #333333
+		}
+
+		body {
+			background-color: #e5ebdd;
+			margin: 2em;
+			border-radius: .2em;
+			/* margin-right: 8em; */
+		}
+	</style>
+
+
+</head>
+
+<body>
+
+	<div class="content-wrapper">
+		<!-- TOC -->
+
+		<div class="TOC">
+
+			<ul>
+				<h5 class="TOChead">目录</h5>
+				<li><a href="#maintitle">云熙笔记</a>
+					<ul>
+						<li><a href="#%E5%AF%BC%E8%A7%88">导览</a>
+							<ul>
+								<li><a href="#%E6%96%87%E4%BB%B6%E9%80%89%E9%A1%B9-%E6%A0%BC%E5%BC%8F">文件选项-格式</a>
+									<ul>
+										<li><a href="#dxf%E5%AF%BC%E5%85%A5%E5%AF%BC%E5%87%BA">dxf导入导出</a></li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li><a href="#%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7%E6%A0%8F">常用工具栏</a>
+							<ul>
+								<li><a href="#%E5%AE%B6%E5%85%B7%E5%88%B6%E4%BD%9Ctab">家具制作tab</a>
+									<ul>
+										<li><a href="#%E8%BE%85%E6%9D%BF">辅板</a>
+										</li>
+										<li><a href="#%E6%8A%BD%E5%B1%89">抽屉</a>
+											<ul>
+												<li><a href="#%E9%AA%91%E9%A9%AC%E6%8A%BD">骑马抽</a></li>
+												<li><a href="#%E6%89%98%E5%BA%95%E6%8A%BD">托底抽</a></li>
+												<li><a
+														href="#%E5%87%B9%E5%BD%A2%E6%8A%BD%EF%BC%8C%E5%87%B8%E5%BD%A2%E6%8A%BD">凹形抽，凸形抽</a>
+												</li>
+												<li><a href="#%E6%8B%89%E6%89%8B">拉手</a></li>
+												<li><a href="#%E7%89%B9%E5%BC%82%E6%8A%BD%E5%B1%89">特异抽屉</a>
+													<ul>
+														<li><a
+																href="#%E5%85%8D%E6%8B%89%E6%89%8B%E6%8A%BD%E5%B1%89">免拉手抽屉</a>
+														</li>
+														
+														<li><a
+																href="#%E5%BC%A7%E5%BD%A2%E6%8B%90%E8%A7%92%E6%8A%BD%E5%B1%89">弧形拐角抽屉</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href="#misc">misc</a></li>
+
+											</ul>
+										</li>
+										<li><a href="#%E9%97%A8">门</a>
+											<ul>
+												<li><a
+														href="#%E9%97%A8%E6%9D%BF%E9%9C%80%E8%A6%81%E4%B8%8B%E6%96%99%E5%8A%A0%E5%B7%A5">门板需要下料加工？</a>
+												</li>
+												<li><a href="#%E7%8E%BB%E7%92%83%E9%97%A8">玻璃门</a>
+													<ul>
+														<li><a href="#%E9%97%A8%E6%9D%BF%E5%B8%A6%E6%A7%BD">门板带槽</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href="#%E9%97%A8%E6%9D%BF%E6%8B%89%E6%89%8B">门板拉手</a></li>
+												<li><a
+														href="#%E8%BD%AC%E8%A7%92%E8%A1%A3%E6%9F%9C%E5%8A%A0%E9%97%A8%E6%9D%BF">转角衣柜加门板</a>
+													<ul>
+														<li><a href="#%E5%85%8D%E7%A2%B0%E6%92%9E">免碰撞</a></li>
+													</ul>
+												</li>
+												<li><a
+														href="#%E9%97%A8%E6%9D%BF%E6%89%93%E6%96%9C%E8%BE%B9%E5%85%85%E5%BD%93%E6%8B%89%E6%89%8B">门板打斜边充当拉手</a>
+												</li>
+												<li><a href="#%E5%87%B9%E6%A7%BD%E6%8B%89%E6%89%8B">凹槽拉手</a></li>
+											</ul>
+										</li>
+										<li><a href="#%E5%88%87%E8%A7%92">切角</a></li>
+										<li><a href="#%E6%A0%BC%E5%AD%90%E6%9E%B6">格子架</a></li>
+										<li><a href="#%E8%A1%A3%E9%80%9A">衣通</a></li>
+									</ul>
+								</li>
+								<li><a
+										href="#%E4%B8%80%E8%88%AC%E5%A4%9A%E6%9F%9C%E4%BD%93%E8%AE%A2%E5%8D%95%E6%8B%86%E5%8D%95%E7%94%9F%E4%BA%A7%E6%B5%81%E7%A8%8B">一般多柜体订单拆单生产流程</a>
+								</li>
+								<li><a href="#%E7%AE%A1%E7%90%86tab">管理tab</a>
+									<ul>
+										<li><a href="#%E8%AE%A2%E5%8D%95">订单</a></li>
+										<li><a href="#%E6%9D%BF%E6%9D%90%E7%AE%A1%E7%90%86">板材管理</a></li>
+										<li><a href="#%E5%B0%81%E8%BE%B9%E6%9D%A1">封边条</a></li>
+										<li><a href="#%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0">设置参数</a>
+											<ul>
+												<li><a href="#%E5%B8%B8%E7%94%A8">常用</a></li>
+												<li><a
+														href="#%E6%9D%BF%E4%BB%B6%E5%8F%82%E6%95%B0%E6%89%93%E5%AD%94%E8%A7%84%E5%88%99%E7%AD%89">板件参数（打孔规则等）</a>
+												</li>
+												<li><a href="#%E5%AD%94%E4%BD%8D">孔位</a>
+													<ul>
+														<li><a href="#%E4%BF%AE%E6%94%B9%E9%80%A3%E6%8E%A5">修改連接</a>
+														</li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li><a href="#%E6%B8%85%E5%8D%95tab">清单tab</a>
+									<ul>
+										<li><a href="#%E6%A3%80%E6%9F%A5">检查</a></li>
+										<li><a href="#%E7%89%A9%E6%96%99%E6%B8%85%E5%8D%95">物料清单</a></li>
+										<li><a href="#%E5%A4%9A%E5%8D%95%E5%90%88%E5%B9%B6">多单合并</a></li>
+										<li><a href="#%E6%A0%87%E6%B3%A8%E5%9B%BE%E7%BA%B8">标注图纸</a></li>
+										<li><a href="#%E8%A3%85%E9%85%8D%E5%9B%BE">装配图</a></li>
+									</ul>
+								</li>
+								<li><a href="#%E6%9F%9C%E4%BD%93%E7%94%9F%E4%BA%A7tab">柜体生产tab</a>
+									<ul>
+										<li><a href="#%E6%8B%86%E5%8D%95">拆单</a></li>
+										<li><a href="#%E8%A1%A5%E6%9D%BF">补板</a>
+											<ul>
+												<li><a
+														href="#%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%A1%A5%E6%9D%BF%E6%96%B9%E6%B3%95">另一个补板方法</a>
+												</li>
+											</ul>
+										</li>
+										<li><a href="#%E5%A4%9A%E5%8D%95%E7%94%9F%E4%BA%A7">多单生产</a></li>
+										<li><a href="#%E8%87%AA%E5%8A%A8%E5%A5%97%E8%89%B2">自动套色</a></li>
+										<li><a href="#%E4%BD%99%E6%96%99">余料</a>
+											<ul>
+												<li><a href="#%E7%91%95%E7%96%B5%E6%9D%BF%E6%9D%90">瑕疵板材</a></li>
+												<li><a
+														href="#%E6%B7%B7%E5%90%88%E7%94%9F%E4%BA%A7%E4%B8%8D%E5%90%8C%E8%A7%84%E6%A0%BC%E6%9D%BF%E6%9D%90%E5%90%8C%E6%97%B6%E6%8E%92%E7%89%88">混合生产，不同规格板材同时排版</a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+						<li><a
+								href="#%E5%BC%82%E5%BD%A2%E6%9D%BF%E4%BB%B6%E5%8F%8A%E4%B8%8D%E8%A7%84%E5%88%99%E9%80%A0%E5%9E%8B%E7%AD%89">异形板件及不规则造型等</a>
+							<ul>
+								<li><a
+										href="#%E5%8F%82%E6%95%B0%E5%8C%96%E7%BC%96%E8%BE%91%E5%BC%82%E5%BD%A2">参数化编辑异形</a>
+									<ul>
+										<li><a
+												href="#%E5%AD%94%E7%B1%BB%E5%9E%8B%E4%B8%8E%E8%BD%AE%E5%BB%93%E6%A8%A1%E5%BC%8F">孔类型与轮廓模式</a>
+										</li>
+										<li><a href="#%E7%94%A8dxf%E6%8E%A7%E5%88%B6%E5%BD%A2%E7%8A%B6">用dxf控制形状</a>
+											<ul>
+												<li><a
+														href="#%E5%AF%BC%E5%85%A5%E7%9A%84dxf%E5%A6%82%E4%BD%95%E5%AE%9A%E4%BD%8D%E5%88%B0%E6%9D%BF%E4%BB%B6">导入的dxf如何定位到板件？</a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li><a
+										href="#cad%E4%B8%AD%E7%9A%84%E5%8E%9A%E5%BA%A6%E8%A8%AD%E7%BD%AE%E5%95%8F%E9%A1%8C">CAD中的厚度設置問題</a>
+								</li>
+
+							</ul>
+						</li>
+						<li><a href="#%E5%85%AD%E9%9D%A2%E7%94%BB%E5%9B%BE">六面画图</a></li>
+						<li><a
+								href="#%E5%BD%A2%E7%8A%B6panel%E7%9A%84%E5%85%B6%E5%AE%83%E5%B7%A5%E5%85%B7">形状panel的其它工具</a>
+							<ul>
+								<li><a href="#%E5%9C%86%E8%A7%92-%E5%80%92%E8%A7%92-%E5%88%87%E8%A7%92">圆角 倒角 切角</a>
+									<ul>
+										<li><a
+												href="#%E5%88%87%E8%A7%92%E6%9F%9C%E6%95%B4%E6%9F%9C%E6%96%9C%E5%88%87">切角柜（整柜斜切）</a>
+										</li>
+										<li><a
+												href="#%E5%B1%9E%E6%80%A7%E9%9D%A2%E6%9D%BF%E7%9A%84%E7%BC%96%E8%BE%91%E5%BD%A2%E7%8A%B6">属性面板的编辑形状</a>
+										</li>
+									</ul>
+								</li>
+								<li><a href="#%E5%B8%83%E5%B1%80%E5%B7%A5%E5%85%B7">布局工具</a>
+									<ul>
+										<li><a href="#%E7%BB%84%E5%90%88">组合</a>
+											<ul>
+												<li><a
+														href="#%E5%A6%82%E4%BD%95%E6%8E%A7%E5%88%B6%E7%BB%84%E5%90%88%E6%97%B6%E7%94%9F%E6%88%90%E7%9A%84%E5%8A%A0%E5%9B%BA%E4%BB%B6%E6%95%B0%E9%87%8F%E7%AD%89">如何控制组合时生成的加固件数量等</a>
+												</li>
+											</ul>
+										</li>
+										<li><a
+												href="#%E6%B7%BB%E5%8A%A0%E6%9F%9C%E4%BD%93%E6%97%B6%E7%9A%84%E5%AE%9A%E4%BD%8D">添加柜体时的定位</a>
+										</li>
+										<li><a
+												href="#%E5%88%A0%E9%99%A4%E6%9F%9C%E4%BD%93%E5%90%8E%E7%9A%84%E7%A9%BA%E4%BD%93%E9%87%8F">删除柜体后的空体量</a>
+										</li>
+									</ul>
+								</li>
+								<li><a href="#%E6%9D%BF%E4%BB%B6%E5%B7%A5%E5%85%B7%E6%A0%8F">板件工具栏</a>
+									<ul>
+										<li><a href="#%E6%89%B9%E9%87%8F%E4%BF%AE%E6%94%B9">批量修改</a></li>
+										<li><a href="#ab%E9%9D%A2">AB面</a></li>
+										<li><a href="#%E5%BB%B6%E4%BC%B8%E5%B9%B3%E9%BD%90">延伸平齐</a></li>
+										<li><a href="#%E6%9D%BF%E4%BB%B6%E8%87%AA%E5%AE%9A%E4%B9%89">板件自定义</a>
+											<ul>
+												<li><a
+														href="#%E7%AB%8B%E6%9D%BF%E4%BE%A7%E6%9D%BF-%E4%B8%AD%E7%AB%8B%E6%9D%BF-%E7%A9%BA%E7%99%BD%E6%9D%BF">立板：侧板
+														中立板 空白板</a></li>
+												<li><a
+														href="#%E6%A8%AA%E6%9D%BF%E9%A1%B6%E6%9D%BF-%E5%B1%82%E6%9D%BF-%E5%BA%95%E6%9D%BF-%E7%A9%BA%E7%99%BD%E6%9D%BF">横板：顶板
+														层板 底板 空白板</a></li>
+												<li><a href="#%E5%89%8D%E6%9D%BF">前板</a></li>
+												<li><a href="#%E8%83%8C%E6%9D%BF">背板</a>
+													<ul>
+														<li><a href="#%E6%8E%A5%E5%90%88%E6%A0%B7%E5%BC%8F">接合样式</a>
+															<ul>
+																<li><a href="#%E5%88%92%E6%A7%BD%E5%BC%8F">划槽式</a></li>
+																<li><a href="#%E5%86%85%E5%B5%8C%E5%BC%8F">内嵌式</a></li>
+																<li><a href="#%E5%85%A8%E7%9B%96%E5%BC%8F">全盖式</a></li>
+																<li><a href="#%E4%BB%85%E6%8B%89%E6%9D%A1">仅拉条</a></li>
+																<li><a
+																		href="#%E8%83%8C%E6%9D%BF%E5%B5%8C%E5%85%A5%E5%9C%A8%E6%A8%AA%E7%BA%B5%E6%8B%89%E6%9D%A1%E4%B9%8B%E9%97%B4">背板嵌入在横/纵拉条之间</a>
+																</li>
+																<li><a
+																		href="#%E8%83%8C%E6%9D%BF%E5%9C%A8%E6%8B%89%E6%9D%A1%E5%90%8E">背板在拉条后</a>
+																</li>
+																<li><a
+																		href="#%E8%83%8C%E6%9D%BF%E5%9C%A8h%E5%BD%A2%E6%8B%BC%E6%9D%A1%E4%B8%8A">背板在H形拼条上</a>
+																</li>
+															</ul>
+														</li>
+														<li><a
+																href="#%E8%83%8C%E6%9D%BF%E7%9A%84%E5%8E%9A%E5%BA%A6">背板的厚度</a>
+														</li>
+														<li><a href="#%E5%8A%A0%E5%9B%BA%E6%8B%89%E6%9D%A1">加固拉条</a>
+														</li>
+														<li><a
+																href="#%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E4%BD%BF%E7%94%A8%E4%BB%80%E4%B9%88%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%83%8C%E6%9D%BF">什么情况下使用什么类型的背板</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href="#%E5%89%8D%E5%90%8E%E5%88%86%E9%9A%94%E6%9D%BF">前后分隔板</a>
+												</li>
+												<li><a href="#%E6%A8%AA%E6%9D%BF">横板</a>
+													<ul>
+														<li><a
+																href="#%E5%B1%82%E6%9D%BF-%E9%A1%B6%E6%9D%BF-%E5%BA%95%E6%9D%BF">层板
+																顶板 底板</a></li>
+														<li><a href="#%E9%A1%B6%E6%8C%A1%E6%9D%BF">顶挡板</a></li>
+														<li><a href="#%E9%A1%B6%E6%8B%89%E6%9D%A1">顶拉条</a></li>
+													</ul>
+												</li>
+												<li><a href="#%E5%B7%A6%E5%8F%B3%E6%8C%A1%E6%9D%BF">左右挡板</a></li>
+												<li><a href="#%E8%B8%A2%E8%84%9A%E6%9D%BF">踢脚板</a></li>
+												<li><a href="#%E5%9C%86%E5%BC%A7%E6%9D%BF">圆弧板</a></li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li><a href="#%E9%85%8D%E4%BB%B6%E5%B7%A5%E5%85%B7%E6%A0%8F">配件工具栏</a>
+									<ul>
+										<li><a
+												href="#%E9%A1%B6%E9%A5%B0%E7%BA%BF%E4%B8%8E%E7%BD%97%E9%A9%AC%E6%9F%B1">顶饰线与罗马柱</a>	
+										</li>
+										<li><a href="#%E7%81%AF%E5%B8%A6%E7%81%AF%E6%A7%BD">灯带灯槽</a>
+											<ul>
+												<li><a href="#%E5%BC%82%E5%BD%A2%E7%81%AF%E6%A7%BD">异形灯槽？</a></li>
+												<li><a
+														href="#%E5%B1%82%E6%9D%BF%E4%BE%A7%E9%9D%A2%E5%8A%A0%E7%81%AF%E6%A7%BD">层板侧面加灯槽</a>
+												</li>
+											</ul>
+										</li>
+										<li><a
+												href="#%E7%94%A8%E7%A9%BA%E7%99%BD%E6%A1%86%E6%9E%B6%E5%88%9B%E5%BB%BA%E7%BB%84%E4%BB%B6">用空白框架创建组件</a>
+											<ul>
+												<li><a
+														href="#%E7%BB%84%E4%BB%B6%E4%B8%AD%E7%9A%84%E5%8F%82%E6%95%B0">组件中的参数</a>
+												</li>
+												<li><a
+														href="#%E7%BB%84%E4%BB%B6%E4%BF%9D%E5%AD%98%E4%B8%8E%E8%B0%83%E7%94%A8">组件保存与调用</a>
+												</li>
+											</ul>
+										</li>
+										<li><a href="#%E6%A0%BC%E6%9E%B6%E9%85%8D%E4%BB%B6%E5%BA%93">格架配件库</a>
+
+										</li>
+									</ul>
+								</li>
+								<li><a href="#%E8%A7%86%E5%9B%BE%E5%B7%A5%E5%85%B7%E6%A0%8F">视图工具栏</a>
+									<ul>
+										<li><a href="#%E8%A7%86%E5%9B%BE">视图</a></li>
+										<li><a href="#%E7%BA%B9%E7%90%86">纹理</a>
+											<ul>
+												<li><a
+														href="#%E6%B7%BB%E5%8A%A0%E5%8E%82%E5%AE%B6%E8%87%AA%E5%B7%B1%E7%9A%84%E7%BA%B9%E7%90%86%E9%A2%9C%E8%89%B2">添加厂家自己的纹理/颜色</a>
+												</li>
+											</ul>
+										</li>
+										<li><a href="#%E9%A3%8E%E6%A0%BC">风格</a></li>
+									</ul>
+								</li>
+								<li><a href="#%E5%BF%AB%E9%80%9F%E5%BB%BA%E6%A8%A1%E6%A8%A1%E5%BC%8F">快速建模模式</a></li>
+								<li><a href="#%E6%8F%92%E4%BB%B6">插件</a></li>
+							</ul>
+						</li>
+						<li><a href="#%E7%94%9F%E4%BA%A7%E7%BA%BF%E8%BD%AF%E4%BB%B6">生产线软件</a>
+							<ul>
+								<li><a href="#%E6%A0%87%E7%AD%BE">标签</a>
+									<ul>
+										<li><a href="#%E6%A0%87%E7%AD%BE%E6%9E%84%E6%88%90">标签构成</a></li>
+										<li><a href="#%E6%A0%87%E7%AD%BE%E6%89%93%E5%8D%B0">标签打印</a>
+											<ul>
+												<li><a href="#%E6%9F%A5%E6%89%BE%E5%B7%A5%E4%BB%B6">查找工件</a></li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li><a href="#%E5%A5%97%E8%89%B2">套色</a></li>
+								<li><a href="#%E5%88%86%E6%8B%A3%E7%A0%81">分拣码</a>
+									<ul>
+										<li><a
+												href="#%E6%89%93%E5%8C%85%E8%BD%AF%E4%BB%B6%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95">打包软件基础用法</a>
+											<ul>
+												<li><a href="#%E6%89%93%E5%8C%85%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85">打包软件安装</a>
+												</li>
+												<li><a href="#%E5%B7%A5%E8%89%BA%E8%AF%B4%E6%98%8E%E6%B7%BB%E5%8A%A0">工艺说明添加</a>
+													<ul>
+														<li><a
+																href="#%E5%B7%A5%E8%89%BA%E8%AF%B4%E6%98%8E%E6%92%AD%E6%8A%A5">工艺说明播报</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href="#%E6%A0%87%E7%AD%BE%E8%AE%BE%E7%BD%AE%E7%AD%89">标签设置等</a></li>
+												<li><a href="#%E6%9D%A1%E7%A0%81%E6%89%AB%E6%8F%8F%E5%8C%BA">条码扫描区</a>
+													<ul>
+														<li><a
+																href="#%E5%88%86%E6%8B%A3%E6%9D%A1%E4%BB%B6%E4%B8%8E%E5%88%86%E6%8B%A3%E4%BD%8D">分拣条件与分拣位</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href="#%E5%88%86%E6%8B%A3%E8%AF%A6%E8%A7%A3">分拣详解</a>
+													<ul>
+														<li><a
+																href="#%E5%8D%95%E4%B8%80%E8%AE%A2%E5%8D%95%E5%88%86%E6%8B%A3%E6%89%93%E5%8C%85">单一订单分拣打包</a>
+															<ul>
+																<li><a href="#%E5%88%86%E6%8B%A3">分拣</a></li>
+																<li><a href="#%E6%89%93%E5%8C%85">打包</a></li>
+															</ul>
+														</li>
+														<li><a
+																href="#%E5%A4%9A%E4%B8%AA%E8%AE%A2%E5%8D%95%E6%B7%B7%E5%8D%95%E5%88%86%E6%8B%A3%E6%89%93%E5%8C%85">多个订单混单分拣打包</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href="#%E6%89%93%E5%8C%85misc">打包misc</a>
+													<ul>
+														<li><a href="#%E6%89%93%E5%8C%85%E6%97%B6%E8%A1%A5%E6%9D%BF">打包时补板</a></li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li><a href="#%E6%89%8B%E5%8A%A8%E6%8E%92%E6%A0%B7">手动排样</a>
+									<ul>
+										<li><a href="#%E8%BD%AC%E7%A7%BB%E5%B7%A5%E4%BB%B6%E5%88%B0%E5%A4%A7%E6%9D%BF">转移工件到大板</a>
+										</li>
+										<li><a
+												href="#%E6%89%8B%E5%8A%A8%E6%8E%92%E6%A0%B7%E7%9A%84%E5%BF%AB%E6%8D%B7%E9%94%AE">手动排样的快捷键</a>
+										</li>
+									</ul>
+								</li>
+								<li><a href="#%E8%B7%91%E6%9D%BF%E9%A2%84%E9%98%B2">跑板预防</a>
+									<ul>
+										<li><a
+												href="#%E8%B0%83%E6%95%B4%E4%B8%8B%E5%88%80%E7%82%B9%E4%B8%8E%E5%88%87%E5%89%B2%E9%A1%BA%E5%BA%8F">调整下刀点与切割顺序</a>
+										</li>
+									</ul>
+								</li>
+								<li><a href="#%E5%88%80%E8%BD%A8%E7%9B%B8%E5%85%B3">刀轨相关</a>
+									<ul>
+										<li><a href="#%E8%B7%AF%E5%BE%84%E6%A8%A1%E6%8B%9F">路径模拟</a>
+											<ul>
+												<li><a
+														href="#%E8%B7%AF%E5%BE%84%E6%A8%A1%E6%8B%9F%E8%AE%A1%E7%AE%97%E6%A7%BD%E8%BE%B9%E8%B7%9D">路径模拟计算槽边距</a>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li><a href="#%E5%A4%9A%E5%A4%B4%E9%92%BB%E5%92%8C%E6%8E%92%E9%92%BB%E6%89%93%E5%AD%94">多头钻和排钻打孔</a>
+									<ul>
+										<li><a href="#%E5%88%80%E5%85%B7%E5%92%8C%E6%8E%92%E9%92%BB%E8%AE%BE%E7%BD%AE">刀具和排钻设置</a>
+										</li>
+									</ul>
+								</li>
+								<li><a
+										href="#%E5%AF%BC%E5%87%BA%E9%A2%86%E6%96%99%E5%8D%95%E5%92%8C%E5%B0%81%E8%BE%B9%E7%94%A8%E9%87%8F">导出领料单和封边用量</a>
+								</li>
+							</ul>
+						</li>
+						<li><a href="#%E6%9D%BF%E6%9D%90%E7%9F%A5%E8%AF%86">板材知识</a>
+							<ul>
+								<li><a href="#%E9%97%A8%E6%9D%BF%E6%9D%90%E6%96%99">门板材料</a></li>
+							</ul>
+						</li>
+						<li><a href="#%E5%85%A8%E5%B1%8B%E5%AE%9A%E5%88%B6%E7%BB%93%E6%9E%84%E7%9F%A5%E8%AF%86">全屋定制结构知识</a>
+							<ul>
+								<li><a
+										href="#%E4%BE%A7%E6%9D%BF%E9%A1%B6%E5%BA%95%E6%9D%BF%E5%B1%82%E6%9D%BF%E7%BB%93%E6%9E%84">侧板、顶底板、层板结构</a>
+									<ul>
+										<li><a href="#%E5%B1%82%E6%9D%BF">层板</a></li>
+										<li><a href="#%E5%9F%BA%E6%9C%AC%E8%BF%9E%E6%8E%A5">基本连接</a></li>
+									</ul>
+								</li>
+								<li><a href="#%E6%8C%89%E9%97%A8%E5%88%86%E6%9F%9C%EF%BC%9A%E8%B6%9F%E3%80%81%E6%8E%A9">按门分柜：趟、掩</a>
+									<ul>
+										<li><a href="#%E9%97%A8%E6%9D%BF">门板</a></li>
+									</ul>
+								</li>
+								<li><a
+										href="#%E9%85%8D%E4%BB%B6%EF%BC%9A%E5%8A%9F%E8%83%BD%E4%BB%B6%E3%80%81%E5%8A%9F%E8%83%BD%E4%BA%94%E9%87%91">配件：功能件、功能五金</a>
+									<ul>
+										<li><a href="#%E5%8A%9F%E8%83%BD%E4%BB%B6%EF%BC%9A%E6%8A%BD">功能件：抽</a>
+											<ul>
+												<li><a href="#%E8%BD%A8%E9%81%93">轨道</a></li>
+											</ul>
+										</li>
+										<li><a href="#%E5%8A%9F%E8%83%BD%E4%BA%94%E9%87%91">功能五金</a></li>
+									</ul>
+								</li>
+								<li><a href="#misc">misc</a>
+									<ul>
+										<li><a href="#%E5%B0%81%E6%9D%BF">封板</a></li>
+										<li><a href="#%E7%BD%97%E9%A9%AC%E6%9F%B1">罗马柱</a></li>
+										<li><a href="#%E5%B8%BD%E6%AA%90%E7%BA%BF">帽檐线</a></li>
+									</ul>
+								</li>
+								<li><a href="#%E7%BB%98%E5%9B%BE%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">绘图注意事项</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+		<!-- /TOC -->
+
+		<main>
+			<div id="moddate">2024年11月 xwx</div>
+			<div id="maintitle" tabindex="-1" data-id="maintitle">云熙笔记
+
+			</div>
+			<h2 id="%E5%AF%BC%E8%A7%88" tabindex="-1">导览</h2>
+			<p><code>RMB</code> 环绕观察 <code>ctrl+RMB</code> 或 <code>MMB</code> 推拉镜头 <code>shift+RMB </code>平移
+				<code>alt+RMB</code> 透视调整
+				<code>ctrl+LMB</code> 多选 <br>选择任一板件再 <code>ctrl+a</code>=选择单个柜体全部部件 在二维视图框选不会选中前板和背板 （以及门板）
+			</p>
+			<h3 id="%E6%96%87%E4%BB%B6%E9%80%89%E9%A1%B9-%E6%A0%BC%E5%BC%8F" tabindex="-1">文件选项-格式</h3>
+			<p>系统参数的导入导出 .cfgz</p>
+			<p>柜体模型文件 .slfc 可以通过 <code>文件-打开</code> 还原（可在另一台电脑还原/继续拆）</p>
+			<p>导出 .dxf （柜体标注图纸，正背俯侧等，用cad打开）</p>
+			<p>导出 .obj 用于其它3d软件做场景渲染等</p>
+			<h4 id="%E5%AF%BC%E5%85%A5cad-%E6%9F%9C%E4%BD%93" tabindex="-1">导入cad 柜体</h4>
+			<p>在cad中 构建柜体框架（正视图，纵横板关系）导出dxf，然后</p>
+			<p><img src="image/拆单工具笔记/1731121876485.png" alt="1731121876485"></p>
+			<p><img src="image/拆单工具笔记/1731122015757.png" alt="1731122015757"></p>
+			<p>ctrlA 批量改封边纹理等，之后继续用内部建模工具完善即可</p>
+			<p>注意柜体绘制不能离坐标原点太远</p>
+			<h4 id="%E5%9C%A8cad%E4%B8%AD%E8%AE%BE%E7%BD%AE%E5%A5%BD%E8%B8%A2%E8%84%9A%E5%92%8C%E9%A1%B6%E6%8C%A1%E6%9D%BF"
+				tabindex="-1">在cad中设置好踢脚和顶挡板</h4>
+			<p>同样使用矩形，但需要参数 <code>厚度</code>表示板厚，<code>标高</code> 则表示深度（自框架前面的缩进值）</p>
+			<h4 id="%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9" tabindex="-1">注意事项</h4>
+			<p>只能用rec命令，不能出现弧线、斜线，rec 绘制的对象也不能通过加点、转弧线、炸开等破坏等，四个内角必须保持90°，矩形可以相交，但不能旋转</p>
+			<p><img src="image/拆单工具笔记/1731123189029.png" alt="1731123189029"><img src="image/拆单工具笔记/1731123018479.png"
+					alt="1731123018479"></p>
+			<p><img src="image/拆单工具笔记/1731123146368.png" alt="1731123146368"><img src="image/拆单工具笔记/1731123423261.png"
+					alt="1731123423261"></p>
+			<p>对于板侧拉斜边实现免拉手，可以导入 （柜深=模拟宽度，柜宽=模拟板厚）然后应用切角，</p>
+			<p>但这样只能在视觉上充当门板，云熙拆单加工不一定能正确处理</p>
+			<h3 id="%E5%88%86%E6%9C%BA%E5%AE%89%E8%A3%85%E9%97%AE%E9%A2%98" tabindex="-1">分机安装问题</h3>
+			<p>使用软件的电脑，防火墙必须都一直关闭，主机上的软件需任意打开一个（局域网通信验证狗）</p>
+			<p>除插加密锁的主机外，其余分机的软件安装跟主机一样，</p>
+			<p>查询主机电脑IP，在分机注册（登录）界面上填写（主机不填写）；</p>
+			<h4 id="dxf%E5%AF%BC%E5%85%A5%E5%AF%BC%E5%87%BA" tabindex="-1">dxf导入导出</h4>
+			<p>在cad留意厚度参数即可，详参异形编辑。将原板导出为dxf在cad再修改，方便控制边界</p>
+			<p>椭圆没有厚度特性，<code>PELLIPSE</code> <code>1</code>，之后绘制的椭圆才是多段线，具有厚度</p>
+			<h2 id="%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7%E6%A0%8F" tabindex="-1">常用工具栏</h2>
+			<h3 id="%E5%AE%B6%E5%85%B7%E5%88%B6%E4%BD%9Ctab" tabindex="-1">家具制作tab</h3>
+			<p>加层板、立板、背板等和板件工具栏差不多，主要不同在于前后分隔板</p>
+			<h4 id="%E8%BE%85%E6%9D%BF" tabindex="-1">辅板</h4>
+			<p>辅板：只开料，不打孔</p>
+			<p>第一种方法在设计端直接添加</p>
+			<p>辅助板用于在家具和墙体之间填充</p>
+			<p><img src="image/云熙笔记/1730450971757.png" alt="1730450971757"></p>
+			<p>辅助板是不需要依附于柜体体量的，通过修改属性调整角度和位置（制作收口封边）</p>
+			<p>门式收口板可用用前板做（侧板内收，让出空间即可），也可以用左/右挡板做（L型收口）</p>
+
+			<h4 id="%E6%8A%BD%E5%B1%89" tabindex="-1">抽屉</h4>
+			<p><img src="image/云熙笔记/1730506304951.png" alt="1730506304951"></p>
+			<p><img src="image/云熙笔记/1730506422009.png"
+					alt="1730506422009"></p>
+			<p>面板类型选项中，普通是面板和抽斗的侧帮（三块壁板）直接连接生成孔位，吸塑是抽斗自带四个壁板（侧帮+前后板），面板额外加到前壁板外。<code>只要面板</code>
+				选项即生成假抽的意思，只有抽面作为装饰，没有实质的抽斗和滑轨等。</p>
+			<p><img src="image/云熙笔记/1730507385361.png" alt="1730507385361"><img src="image/云熙笔记/1730506995342.png"
+					alt="1730506995342"></p>
+			<p>内嵌和外盖指抽面是与柜体前面平齐还是突出于柜面。侧隙系抽面与两侧的柜体立板之间的缝隙， 层距系上下两抽面板间隙</p>
+			<p>抽屉底板的结合样式参照背板理解，划槽式是在抽帮上开槽，底板嵌入槽中，底板间距控制底板参照侧帮底边的高度，底板厚度同时也是开槽宽度，加固拉条参背板理解；内嵌式是壁板(+抽面)包夹底板；外盖式则是底板托抽帮</p>
+			<p><img src="image/云熙笔记/1730509881155.png" alt="1730509881155"></p>
+			<p>裤抽，用来挂裤子的</p>
+			<p><img src="image/云熙笔记/1730510174316.png" alt="1730510174316"></p>
+			<p>键盘抽不表</p>
+			<h5 id="%E9%AA%91%E9%A9%AC%E6%8A%BD" tabindex="-1">骑马抽</h5>
+			<p><img src="image/云熙笔记/1730510222005.png" alt="1730510222005"><img src="image/云熙笔记/1730510442849.png"
+					alt="1730510442849"><img src="image/云熙笔记/1730510514383.png" alt="1730510514383"><img
+					src="image/云熙笔记/1730510536269.png" alt="1730510536269"></p>
+			<p>骑马抽即豪华阻尼抽，常用于厨房设备等，（因为有餐具厨具多有陶瓷或玻璃部分，有阻尼能避免碰撞损坏），两边的阻尼器是成品金属件，所以在云熙的建模中抽帮是缺失的</p>
+			<p>参数上，底板侧侧边与抽屉两侧立板之间留出阻尼导轨宽度，</p>
+			<h5 id="%E6%89%98%E5%BA%95%E6%8A%BD" tabindex="-1">托底抽</h5>
+			<p>托底抽的导轨安装在抽底（隐藏），滚动更顺滑，承重能力更好，外观简洁</p>
+			<p>托底抽的轨道按实际购买的轨道参数设置</p>
+			<h5 id="%E5%87%B9%E5%BD%A2%E6%8A%BD%EF%BC%8C%E5%87%B8%E5%BD%A2%E6%8A%BD" tabindex="-1">凹形抽，凸形抽</h5>
+			<p><img src="image/云熙笔记/1730510937148.png" alt="1730510937148"><img src="image/云熙笔记/1730511174477.png"
+					alt="1730511174477"><img src="image/云熙笔记/1730511184875.png" alt="1730511184875"></p>
+			<p>凹形抽的意义是在充分利用固定设备/管件等两侧的空间<img src="image/云熙笔记/1730511204967.png" alt="1730511204967"></p>
+			<p>上翻收纳同理</p>
+			<p><img src="image/云熙笔记/1730513078188.png" alt="1730513078188"></p>
+			<p>暂不清楚什么场景会用到这种抽屉</p>
+			<h5 id="%E6%8B%89%E6%89%8B" tabindex="-1">拉手</h5>
+			<h6 id="%E7%89%9B%E8%A7%92%E6%8B%89%E6%89%8B" tabindex="-1">牛角拉手</h6>
+			<p><img src="image/拆单工具笔记/1731114110659.png" alt="1731114110659"></p>
+			<p>计算排量前要设置刀具，选一个刀头，设置刀径，勾选用于下料机加工</p>
+			<p><img src="image/拆单工具笔记/1731114270119.png" alt="1731114270119"></p>
+			<p><img src="image/拆单工具笔记/1731114404135.png" alt="1731114404135"></p>
+			<p><img src="image/拆单工具笔记/1731114471105.png" alt="1731114471105"></p>
+			<p>单独输出拉手的加工nc，在开完板材封好边后二次加工</p>
+			<h5 id="%E7%89%B9%E5%BC%82%E6%8A%BD%E5%B1%89" tabindex="-1">特异抽屉</h5>
+			<h6 id="%E5%85%8D%E6%8B%89%E6%89%8B%E6%8A%BD%E5%B1%89" tabindex="-1">免拉手抽屉</h6>
+			<p>n连抽中间无层板，无拉手</p>
+			<p>制作方法就是前板缩进，层板延伸平齐到前板，通过面板的上下延（外盖）来做拉手</p>
+			<p><img src="image/云熙笔记/1730516287462.png" alt="1730516287462"><img src="image/云熙笔记/1730516493286.png"
+					alt="1730516493286"></p>
+			<p>柜门的免拉手也是相同的逻辑</p>
+		
+			<h6 id="%E5%BC%A7%E5%BD%A2%E6%8B%90%E8%A7%92%E6%8A%BD%E5%B1%89" tabindex="-1">弧形拐角抽屉</h6>
+			<p><img src="image/云熙笔记/1730513371297.png" alt="1730513371297"></p>
+			<p>目前只能实现俯视图和前视图上的转角圆弧，这种弧形抽屉做不了</p>
+			<p><img src="image/拆单工具笔记/1731113248803.png" alt="1731113248803"></p>
+			<p>顶底板通过异形编辑器完成</p>
+			<p>圆弧半径大于200，用6mm刀具加工，半径小于200的，用3mm刀具加工</p>
+			<p>背开槽弧形折边技术——弧面&quot;排骨纹&quot;</p>
+			<h5 id="misc" tabindex="-1">misc</h5>
+			<p>遇到选择的空间区域无法生成抽屉的时候，检查各项参数的高度值等，是否与空间尺寸约束冲突，还有 <code>抽屉间距-数量</code> 选项是否有问题</p>
+			<p>抽帮高度一般抽面减50，酌情加减</p>
+	
+			<h4 id="%E9%97%A8" tabindex="-1">门</h4>
+			<p><img src="image/云熙笔记/1730452995936.png" alt="1730452995936"></p>
+			<p>在层板之后创建的门板可以用延伸平齐将门板拉成通高</p>
+			<p>门板也是板件，可以使用异形编辑器修改</p>
+			<h5 id="%E9%97%A8%E6%9D%BF%E9%9C%80%E8%A6%81%E4%B8%8B%E6%96%99%E5%8A%A0%E5%B7%A5%EF%BC%9F" tabindex="-1">
+				门板需要下料加工？</h5>
+			<p>在板件属性中可改回下料加工</p>
+			<h5 id="%E9%97%A8%E6%9D%BF%E5%90%88%E9%A1%B5%E5%AD%94" tabindex="-1">门板合页孔</h5>
+			<p>孔位设置只能设置排布间距和首末间距，不能自定义每个点位</p>
+			<p>当遇到合页与现有孔位冲突时，只能修改门铰链的孔位</p>
+			<p><img src="image/拆单工具笔记/1731116752025.png" alt="1731116752025"><img src="image/拆单工具笔记/1731116448080.png"
+					alt="1731116448080"></p>
+			<p>不勾选默认孔位，调整上下边距</p>
+			<p>自定义孔位表达式：<code>柜底到下始首孔间距 | * | * | * | .. | 柜顶到下始末孔间距</code>，每个 <code>|</code> 代表着一个铰链位，<code>*</code>
+				代表高度变量（自适应均布），任一 * 都可以替换为具体的间距值，以实现不规则孔距</p>
+			<p><img src="image/拆单工具笔记/1731117261719.png" alt="1731117261719"></p>
+			<p>修改属性里也有类似选项</p>
+			<h5 id="%E7%8E%BB%E7%92%83%E9%97%A8" tabindex="-1">玻璃门</h5>
+			<p>实际是木夹玻，铝框玻、纯玻门没有（全屋定制是木作）</p>
+			<p><img src="image/云熙笔记/1730453681406.png" alt="1730453681406"></p>
+			<h6 id="%E9%97%A8%E6%9D%BF%E5%B8%A6%E6%A7%BD" tabindex="-1">门板带槽</h6>
+			<p><img src="image/云熙笔记/1730454495970.png" alt="1730454495970"></p>
+			<p>D槽深度 W槽宽度</p>
+			<p><img src="image/云熙笔记/1730453982630.png" alt="1730453982630"></p>
+			<h5 id="%E9%97%A8%E6%9D%BF%E6%8B%89%E6%89%8B" tabindex="-1">门板拉手</h5>
+			<p><img src="image/云熙笔记/1730454733495.png" alt="1730454733495"></p>
+			<p><img src="image/云熙笔记/1730454829994.png" alt="1730454829994"></p>
+			<p><img src="image/云熙笔记/1730454878616.png" alt="1730454878616"></p>
+			<p><img src="image/云熙笔记/1730454909822.png" alt="1730454909822"></p>
+			<p><img src="image/云熙笔记/1730454948054.png" alt="1730454948054"></p>
+			<p><img src="image/云熙笔记/1730455025888.png" alt="1730455025888"></p>
+			<p><img src="image/云熙笔记/1730455048338.png" alt="1730455048338"></p>
+			<h5 id="%E8%BD%AC%E8%A7%92%E8%A1%A3%E6%9F%9C%E5%8A%A0%E9%97%A8%E6%9D%BF" tabindex="-1">转角衣柜加门板</h5>
+			<p>转角衣柜的横板边长参数可以到异形编辑器中点选边来查看</p>
+			<p><img src="image/云熙笔记/1730517564702.png" alt="1730517564702"></p>
+			<p><img src="image/云熙笔记/1730517678884.png" alt="1730517678884"></p>
+			<p>通过遮掩样式调整拉手位置</p>
+			<p><img src="image/云熙笔记/1730517766580.png" alt="1730517766580"></p>
+			<p>另一侧同理</p>
+			<h6 id="%E5%85%8D%E7%A2%B0%E6%92%9E" tabindex="-1">免碰撞</h6>
+			<p><img src="image/云熙笔记/1730517977584.png" alt="1730517977584"></p>
+			<p>关键在拉手（在门的开启角度内不能碰到），可以考虑免拉手做法</p>
+			<h5 id="%E9%97%A8%E6%9D%BF%E6%89%93%E6%96%9C%E8%BE%B9%E5%85%85%E5%BD%93%E6%8B%89%E6%89%8B" tabindex="-1">
+				门板打斜边充当拉手</h5>
+			<p>用工艺说明标注</p>
+			<h5 id="%E5%87%B9%E6%A7%BD%E6%8B%89%E6%89%8B" tabindex="-1">凹槽拉手</h5>
+			<p>ditto</p>
+			<h4 id="%E5%88%87%E8%A7%92" tabindex="-1">切角</h4>
+			<p>切角是为了避让梁、柱、管等，选择柜体其中一个部件，然后选择对应的视图设置切角参数即可。撤销切角是撤销全部，若柜体有多处切角，可能需要全部重建，但这种情况还是比较少见的</p>
+			<p><img src="image/云熙笔记/1730455199129.png" alt="1730455199129"></p>
+			<p><img src="image/云熙笔记/1730455220922.png" alt="1730455220922"></p>
+			<h4 id="%E6%A0%BC%E5%AD%90%E6%9E%B6" tabindex="-1">格子架</h4>
+			<p><img src="image/云熙笔记/1730452754526.png" alt="1730452754526"></p>
+			<p>去选宽度作为基准，使用固定列数，用于创建完全充满空间的格子架</p>
+			<p><img src="image/云熙笔记/1730452840534.png" alt="1730452840534"></p>
+			<h4 id="%E8%A1%A3%E9%80%9A" tabindex="-1">衣通</h4>
+			<p><img src="image/云熙笔记/1730451943068.png" alt="1730451943068"></p>
+			<p><img src="image/云熙笔记/1730451876453.png" alt="1730451876453"></p>
+			<p>手工打孔则不会生成衣通的孔槽，去选手工打孔，即机器预开孔，才会生成孔槽</p>
+			<p><img src="image/云熙笔记/1730452518379.png" alt="1730452518379"></p>
+			<h3 id="%E4%B8%80%E8%88%AC%E5%A4%9A%E6%9F%9C%E4%BD%93%E8%AE%A2%E5%8D%95%E6%8B%86%E5%8D%95%E7%94%9F%E4%BA%A7%E6%B5%81%E7%A8%8B"
+				tabindex="-1">一般多柜体订单拆单生产流程</h3>
+			<p>文件格式：slfs设计端 slfx拆单端，打开时间最近的一个即可</p>
+			<p>每个房间分别建模，单独一个文件，分别<img src="image/云熙笔记/1730441960140.png"
+					alt="1730441960140">拆单dxf确认导出，但先不启动下料，同一项目中所有工程文件都导出拆单文件后，再启用下料【生产端软件】（如果柜子有异形，启动下料前需要拆单辅助-异形件修正）
+			</p>
+			<p>把同项目的柜体文件夹放到一个同一的项目文件，在生产端的工程库导入，选择项目，点导入，（或在导入面板：先清空，再 多柜体导入选择顶层项目文件夹，勾选要生产的柜体）</p>
+			<h3 id="%E7%AE%A1%E7%90%86tab" tabindex="-1">管理tab</h3>
+			<p><img src="image/云熙笔记/1730442897745.png" alt="1730442897745"></p>
+			<p>云图库的柜体用 添加到布局 即可添加到当前项目，但不是所有柜体都可编辑。家具库同理。</p>
+			<h4 id="%E8%AE%A2%E5%8D%95" tabindex="-1">订单</h4>
+			<p>建模之前填写项目元数据，如果已经开始建模，但是想修改所有柜体的材质，可以在订单选项中设置，其他元数据同理</p>
+			<p><img src="image/云熙笔记/1730531795288.png" alt="1730531795288"></p>
+			<p>或者 <code>批量修改-修改板件属性</code></p>
+			<p><img src="image/云熙笔记/1730533374227.png" alt="1730533374227"></p>
+			<h4 id="%E6%9D%BF%E6%9D%90%E7%AE%A1%E7%90%86" tabindex="-1">板材管理</h4>
+			<p>功用不明</p>
+			<h4 id="%E5%B0%81%E8%BE%B9%E6%9D%A1" tabindex="-1">封边条</h4>
+			<p>厚封边条（1.5）薄封边条（.5）：常规如三薄一厚，厚封边用于可见面，其余用薄封边，省成本。但薄封边修边处理较难，不如厚封边圆润</p>
+			<p>设置 选项中有全局预设的 厚/薄封边值</p>
+			<p><img src="image/云熙笔记/1730532733484.png" alt="1730532733484"></p>
+			<p>常用工具栏的封边条管理</p>
+			<p><img src="image/云熙笔记/1730532110158.png" alt="1730532110158"></p>
+			<p>板件面板的封边属性和属性面板中板件属性-封边几乎是一致的</p>
+			<p><img src="image/云熙笔记/1730532080175.png" alt="1730532080175"></p>
+			<p><img src="image/云熙笔记/1730532185491.png" alt="1730532185491"><img src="image/云熙笔记/1730532541990.png"
+					alt="1730532541990"></p>
+			<p>拆单的加工数据输入，下料尺寸栏会有封边厚度信息，可以二次修改</p>
+			<h4 id="%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0" tabindex="-1">设置参数</h4>
+			<h5 id="%E5%B8%B8%E7%94%A8" tabindex="-1">常用</h5>
+			<p>保存设置中，可设置自动保存间隔，保存路径，保存时是否更新孔槽、是否生成柜体缩略图等。</p>
+			<p>物料清单设置与报价相关</p>
+			<h5 id="%E6%9D%BF%E4%BB%B6%E5%8F%82%E6%95%B0%EF%BC%88%E6%89%93%E5%AD%94%E8%A7%84%E5%88%99%E7%AD%89%EF%BC%89"
+				tabindex="-1">板件参数（打孔规则等）</h5>
+			<p>板材尺寸是原料修边后的尺寸</p>
+			<p>板件许可尺寸，超过设置的板件不会体现在报价单中？</p>
+			<p>封边厚度？ 厚边，薄边</p>
+			<p>自定义（这些参数都是需要的对结构和安装有深入了解才会设置）</p>
+			<p><img src="image/云熙笔记/1730450209125.png" alt="1730450209125"></p>
+			<p>比如设置层板深度在600内时，在深度方向会有2个二合一 ，则长度写600，二合一写2，同理类推，如果是侧板/中立板，长度对应的是高度方向</p>
+			<h5 id="%E5%AD%94%E4%BD%8D" tabindex="-1">孔位</h5>
+			<p>基本是按国标来的，多数时候不用管</p>
+			<p><img src="image/云熙笔记/1730452159022.png" alt="1730452159022"></p>
+			<p><img src="image/云熙笔记/1730452250103.png" alt="1730452250103"></p>
+			<h6 id="%E4%BF%AE%E6%94%B9%E8%BF%9E%E6%8E%A5" tabindex="-1">修改连接</h6>
+			<p>找到对应板件，不勾选系统默认孔位佈局，</p>
+			<p>長度表示從這個數到比它小的另一個長度參數的區間，都應用右側設置</p>
+			<p>首末孔邊距--》然後調整間距，更新孔槽即可</p>
+			<p>修改木榫可以到孔位--三/二合一找</p>
+			<h6 id="%E6%9F%9C%E4%BD%93%E7%BB%84%E5%90%88%E7%94%9F%E6%88%90%E5%AD%94%E4%BD%8D" tabindex="-1">柜体组合生成孔位
+			</h6>
+			<p>组合可以生成孔位连接，但不支持滑槽</p>
+			<h6 id="%E4%BD%BF%E7%94%A8%E5%85%B6%E4%BB%96%E8%BF%9E%E6%8E%A5%E4%BB%B6" tabindex="-1">使用其他连接件</h6>
+			<p><img src="image/拆单工具笔记/1731121554166.png"
+					alt="1731121554166"></p>
+			<h3 id="%E6%B8%85%E5%8D%95tab" tabindex="-1">清单tab</h3>
+			<h4 id="%E6%A3%80%E6%9F%A5" tabindex="-1">检查</h4>
+			<p>检查尺寸、板件有效性和冲突等、</p>
+			<h4 id="%E7%89%A9%E6%96%99%E6%B8%85%E5%8D%95" tabindex="-1">物料清单</h4>
+			<p><img src="image/云熙笔记/1730528623292.png" alt="1730528623292"></p>
+			<p><img src="image/云熙笔记/1730528703751.png" alt="1730528703751"></p>
+			<h4 id="%E5%A4%9A%E5%8D%95%E5%90%88%E5%B9%B6" tabindex="-1">多单合并</h4>
+			<p>作用是将多个订单合并输出清单，比如一个项目中不同房间的柜体是分别建模的，通过多单合并可将板材和合并统计，方便报价/成本预算</p>
+			<p><img src="image/云熙笔记/1730534517421.png" alt="1730534517421"></p>
+			<p><img src="image/云熙笔记/1730534629936.png" alt="1730534629936"></p>
+			<h5 id="%E5%85%B3%E4%BA%8E%E6%B7%B7%E5%8D%95%E7%94%9F%E4%BA%A7" tabindex="-1">关于混单生产</h5>
+			<p>设计拆单上使用多单生产，</p>
+			<p>或者生产排版使用多柜体数据导入（多个柜体拆单数据归纳到一个目录）</p>
+			<h6 id="%E5%A4%9A%E5%8D%95%E5%90%88%E5%B9%B6%E5%92%8C%E5%A4%9A%E5%8D%95%E7%94%9F%E4%BA%A7%E7%9A%84%E5%8C%BA%E5%88%AB"
+				tabindex="-1">多单合并和多单生产的区别</h6>
+			<p>多单合并用于出报价、五金清单，多单生产用于合并计算排版加工</p>
+			<h4 id="%E6%A0%87%E6%B3%A8%E5%9B%BE%E7%BA%B8" tabindex="-1">标注图纸</h4>
+			<p>和 <code>文件-导出dxf标注</code> 是一样的，</p>
+			<p>标注图纸带有二维码，手机扫码可看三维图纸</p>
+			<h5 id="%E5%AF%BC%E5%87%BAsketchup%E6%A8%A1%E5%9E%8B" tabindex="-1">导出sketchup模型</h5>
+			<p>在项目文件的dim子目录可以找到3d.dxf，在su中导入即可</p>
+			<h4 id="%E8%A3%85%E9%85%8D%E5%9B%BE" tabindex="-1">装配图</h4>
+			<p><img src="image/云熙笔记/1730534056649.png" alt="1730534056649"></p>
+			<p><img src="image/云熙笔记/1730534109986.png" alt="1730534109986"></p>
+			<p>点击分享就能生成二维码，扫码可看三维模型，有开窗、门、抽屉，以及看尺寸、爆炸图等功能</p>
+			<h3 id="%E6%9F%9C%E4%BD%93%E7%94%9F%E4%BA%A7tab" tabindex="-1">柜体生产tab</h3>
+			<h4 id="%E6%8B%86%E5%8D%95" tabindex="-1">拆单</h4>
+			<p>建好模型后，点击拆单dxf</p>
+			<p><img src="image/云熙笔记/1730529127775.png" alt="1730529127775"></p>
+			<p>启动生产软件进行排样，勾选自动套色</p>
+			<p><img src="image/云熙笔记/1730529302060.png" alt="1730529302060"></p>
+			<p>点击确定，然后点计算</p>
+			<p><img src="image/云熙笔记/1730529408464.png" alt="1730529408464"></p>
+			<p><img src="image/云熙笔记/1730529454438.png" alt="1730529454438"></p>
+			<p>之后就会自动排版，</p>
+			<pre><code>省料 和 余料 的区别
+</code></pre>
+			<p><img src="image/云熙笔记/1730529591911.png" alt="1730529591911"></p>
+			<p>之后就会生成nc文件，把这些文件拷到机器上就可生产</p>
+			<h4 id="%E8%A1%A5%E6%9D%BF" tabindex="-1">补板</h4>
+			<p>补板即板件损坏（或孔位错误），需要单独补充个别板件的情况（标签中黑色的部位就是板件所处位置）</p>
+			<p>选择多块要补板的板件，点击 <code>柜体生产-补板</code> ，打开生产端，（导入拆单数据或多柜体导入），直接确定、计算，即用一块新料重新排版。如果单个项目要补的板件较少，会浪费大板。</p>
+			<h5 id="%E5%8F%A6%E4%B8%80%E4%B8%AA%E8%A1%A5%E6%9D%BF%E6%96%B9%E6%B3%95" tabindex="-1">另一个补板方法</h5>
+			<p>可以在另一个要生产的单子中导入包含补板的dxf文件，一起排版生产</p>
+			<p>在原项目的排版文件中，在要补办的板件上右键设为补板，最后右键导出补板文件，新建一个文件夹保存（dxf文件），在下一个要生产的订单中导入补板文件合并排版</p>
+			<p><img src="image/云熙笔记/1730530150306.png" alt="1730530150306"><img
+					src="image/云熙笔记/1730530417088.png"
+					alt="1730530417088"></p>
+			<h5 id="%E6%95%B4%E5%BC%A0%E5%A4%A7%E6%9D%BF%E7%9A%84%E8%A1%A5%E6%9D%BF" tabindex="-1">整张大板的补板</h5>
+			<p>已加工一部分板件，但发生错误（封边设置等错误，刀具问题、排版错误等），需要利用剩余板件重新排版</p>
+			<p><img src="image/拆单工具笔记/1731116088507.png" alt="1731116088507"></p>
+			<p>勾选每张板的不加工，<code>输出</code>-<code>输出部分板件刀轨后删除已加工工件</code> 输出刀轨</p>
+			<p>再导入，重新计算排版即可</p>
+			<h6 id="%E6%89%AB%E7%A0%81%E8%A1%A5%E6%9D%BF" tabindex="-1">扫码补板</h6>
+			<p>在右侧查找工件选项卡输入扫描标签上的二维码获得的工件信息，会自动在工程库搜索对应排版数据，调出所在的排版图，右键排版上的板件，导出为补件</p>
+			<p>在导入界面，选中导入拆单，将文件类型改为图形文件， 导入补板文件</p>
+			<h4 id="%E5%A4%9A%E5%8D%95%E7%94%9F%E4%BA%A7" tabindex="-1">多单生产</h4>
+			<p>多单合并和多单生产都要先更新孔槽，五金等数量才会准确。</p>
+			<p>多单生产的前提是生成过拆单文件</p>
+			<p><code>多单生产 - 我的家具库</code> 中，（已经拆过单的项目会带星标，没拆过的不能加入多单生产，）选中多个柜子，点多单合并，确定，打开生产端软件，之后排版计算就会把多个单子的板件一起排版</p>
+			<h4 id="%E8%87%AA%E5%8A%A8%E5%A5%97%E8%89%B2" tabindex="-1">自动套色</h4>
+			<p>用纹理工具给板件赋颜色/纹理，在拆单时选自动套色，不同颜色的板就会分开排版</p>
+			<p>输出刀轨时勾选文件名包含厚度和颜色等，<code>增加套色目录</code> 选项会按颜色生成不同文件夹，输出刀轨后，不同颜色的刀轨放到对应的文件夹</p>
+			<h4 id="%E4%BD%99%E6%96%99" tabindex="-1">余料</h4>
+			<p>排版中有些版面利用率低，还有大片材料可以，可以右键导出余料，之后在另一柜体拆单进入加工数据中，导入余料文件（.lvr），在余料编辑器调整好位置后按导入，然后确定，<code>排样（余料）</code>，</p>
+			<p><img src="image/云熙笔记/1730537724309.png" alt="1730537724309"></p>
+			<h6 id="%E4%BD%99%E6%96%99%E5%8D%95%E9%9D%A2%E5%8A%A0%E5%B7%A5" tabindex="-1">余料单面加工</h6>
+			<p>适用于无双面开孔的板件加工（不翻板加工），</p>
+			<p><img src="image/拆单工具笔记/1731117557714.png" alt="1731117557714"><br>余料管理可以导入余料，或手工输入余料尺寸，点保存余料后，就可以在导入界面找到保存的余料<br>
+				<img src="image/拆单工具笔记/1731117650209.png" alt="1731117650209">，<br><img src="image/拆单工具笔记/1731117691205.png"
+					alt="1731117691205">，<br>勾选单面加工，正常排样
+			</p>
+			<p><img src="image/拆单工具笔记/1731117717483.png" alt="1731117717483"></p>
+			<p>排样图中，黑色区域即板料范围</p>
+			<h6 id="%E4%BD%99%E6%96%99%E4%BD%8D%E7%BD%AE%E6%B7%BB%E5%8A%A0%E6%9D%BF%E4%BB%B6" tabindex="-1">余料位置添加板件
+			</h6>
+			<p>在计算后的排版空余处右键 <code>导入拆单文件</code>，将补板文件导入，手动拖拽调整位置，</p>
+			<p>如果是规则板件，可以右键导入 <code>工件数据</code>，输入宽高，如果是勾选了自动填充，则所右键的剩余板件能放下几块就自动添加几块对应规格的工件</p>
+			<h5 id="%E7%91%95%E7%96%B5%E6%9D%BF%E6%9D%90" tabindex="-1">瑕疵板材</h5>
+			<p>在加工数据输入处点击导入瑕疵板材，在余料编辑器中框选 <code>禁排区</code>，可以设置瑕疵板的精确尺寸，之后导入确定，排版计算仍旧选择余料</p>
+			<h5 id="%E4%BD%99%E6%96%99%E6%95%B0%E6%8D%AE%E6%89%B9%E9%87%8F%E5%AF%BC%E5%85%A5" tabindex="-1">余料数据批量导入
+			</h5>
+			<p><img src="image/拆单工具笔记/1731115053294.png" alt="1731115053294"></p>
+			<h5 id="%E6%B7%B7%E5%90%88%E7%94%9F%E4%BA%A7%EF%BC%8C%E4%B8%8D%E5%90%8C%E8%A7%84%E6%A0%BC%E6%9D%BF%E6%9D%90%E5%90%8C%E6%97%B6%E6%8E%92%E7%89%88"
+				tabindex="-1">混合生产，不同规格板材同时排版</h5>
+			<p>可以将用量较少的另一种规格板材作为余料导入(物料导入)拆单，（×掉加工数据输入面板，在生产界面管理物料，然后通过导入选项重新进入），设置余料，可以勾选余料优先</p>
+			<h6 id="%E5%8F%A6%E4%B8%80%E7%A7%8D%E8%AE%BE%E7%BD%AE" tabindex="-1">另一种设置</h6>
+			<p>48尺/49尺混排，比如项目中同时有2400和2700的柜子，直接拆单生产，在生产端，原材尺寸中有显示不同规格板材，勾选加工，对于2740的板材，勾选 <code>加工超大工件</code> 选项，</p>
+			<p><img src="image/云熙笔记/1730538819988.png" alt="1730538819988"></p>
+			<p>可以自定义超大板尺寸，之后正常走排版计算流程，就能混合生产</p>
+			<h2 id="%E5%BC%82%E5%BD%A2%E6%9D%BF%E4%BB%B6%E5%8F%8A%E4%B8%8D%E8%A7%84%E5%88%99%E9%80%A0%E5%9E%8B%E7%AD%89"
+				tabindex="-1">异形板件及不规则造型等</h2>
+			<h3 id="%E5%8F%82%E6%95%B0%E5%8C%96%E7%BC%96%E8%BE%91%E5%BC%82%E5%BD%A2" tabindex="-1">参数化编辑异形</h3>
+			<p><img src="image/云熙笔记/1730334649133.png"
+					alt="1730334649133"></p>
+			<p>选择板件后，在 形状panel 启动异形编辑器，</p>
+			<p><img src="image/云熙笔记/1730336918379.png" alt="1730336918379"></p>
+			<p>可以直接选择任意两条边线，输出参数来倒角</p>
+			<p>对于开孔/挖空，通过基础几何类型和布尔工具综合实现</p>
+			<p><img src="image/云熙笔记/1730336841030.png" alt="1730336841030"></p>
+			<p><img src="image/云熙笔记/1730336999947.png" alt="1730336999947"></p>
+			<p>这里的布尔操作是非破坏性的，可以通过拆分工具将复合路径还原成多个独立路径</p>
+			<p><img src="image/云熙笔记/1730337158239.png" alt="1730337158239"></p>
+			<p>对齐工具是针对base类型的，</p>
+			<p><img src="image/云熙笔记/1730337674612.png" alt="1730337674612"></p>
+			<p><img src="image/云熙笔记/1730337752261.png" alt="1730337752261"></p>
+			<h5 id="%E5%AD%94%E7%B1%BB%E5%9E%8B%E4%B8%8E%E8%BD%AE%E5%BB%93%E6%A8%A1%E5%BC%8F" tabindex="-1">孔类型与轮廓模式
+			</h5>
+			<p>默认情况下系贯通板厚的孔洞，可改为闭合孔，即挖槽</p>
+			<p><img src="image/云熙笔记/1730338122739.png" alt="1730338122739"></p>
+			<p><img src="image/云熙笔记/1730338906658.png" alt="1730338906658"> 这两个用于将闭合孔转到板的正/背面</p>
+			<p>将创建的基础图形转为轮廓，然后点击 作为外轮廓，即可替换默认的矩形板件</p>
+			<p><img src="image/云熙笔记/1730338784393.png" alt="1730338784393"></p>
+			<p>多段线工具难用，没有捕捉，不知如何闭合，应属半成品功能，可忽略</p>
+			<h4 id="%E7%94%A8dxf%E6%8E%A7%E5%88%B6%E5%BD%A2%E7%8A%B6" tabindex="-1">用dxf控制形状</h4>
+			<p>在cad中创建一个图形文件并保存为dxf文件，绘图尺寸按实，遇到镂空/凹雕处，设置挖空形状轮廓线的厚度（正数/负数），然后放在 <strong>图层一</strong></p>
+			<p>图层一是识别条件，单纯改线型也可</p>
+			<p>轮廓不能交错或包含，更新或改换轮廓都要重新打开一个dxf窗口再导入</p>
+			<p><img src="image/云熙笔记/1730335826137.png" alt="1730335826137"></p>
+			<p><img src="image/云熙笔记/1730335926415.png" alt="1730335926415"></p>
+			<h5 id="%E5%AF%BC%E5%85%A5%E7%9A%84dxf%E5%A6%82%E4%BD%95%E5%AE%9A%E4%BD%8D%E5%88%B0%E6%9D%BF%E4%BB%B6%EF%BC%9F"
+				tabindex="-1">导入的dxf如何定位到板件？</h5>
+			<p>取dxf图形中的 minx, miny 为原点坐标，对应到目标板件的左下角（笛卡尔坐标系）</p>
+			<p>此例中，图元的原点 (x1,y2) 对齐到目标板件（矩形面域）的左下角</p>
+			<p><img src="image/云熙笔记/1730337444755.png" alt="1730337444755"></p>
+			<h3 id="cad%E4%B8%AD%E7%9A%84%E5%8E%9A%E5%BA%A6%E8%A8%AD%E7%BD%AE%E5%95%8F%E9%A1%8C" tabindex="-1">
+				CAD中的厚度設置問題</h3>
+			<p>0層不變，色改megenta，厚度負值，存為dxf，再導入，就是挖槽</p>
+
+	
+			<h2 id="%E5%85%AD%E9%9D%A2%E7%94%BB%E5%9B%BE" tabindex="-1">六面画图</h2>
+			<p>大所謂六面畫法，就是利用二維視圖的選面，在不同的面添加只屬於正面的部件如前板、門板等</p>
+			<p>如果是正多边形的柜子，可以用异形编辑器倒角控制斜切角度然后拼接，通过组合生成连接，但不能保证孔槽的合理性</p>
+			<p><img src="image-1.png" alt="alt text"></p>
+			<p><img src="image/拆单工具笔记/1730940842581.png" alt="1730940842581"></p>
+			<h2 id="%E5%BD%A2%E7%8A%B6panel%E7%9A%84%E5%85%B6%E5%AE%83%E5%B7%A5%E5%85%B7" tabindex="-1">形状panel的其它工具
+			</h2>
+			<p><img src="image/云熙笔记/1730340243935.png" alt="1730340243935"></p>
+			<p>每个切/倒都是可以调整参数的</p>
+			<p><img src="image/云熙笔记/1730340334631.png" alt="1730340334631"></p>
+			<p><img src="image/云熙笔记/1730340375783.png" alt="1730340375783"></p>
+			<p>对通过 dxf 建立的板件倒角，会破坏原来的轮廓形状，但内部挖空/槽在没有与外轮廓相交时可以保留</p>
+			<p><img src="image/云熙笔记/1730340688889.png" alt="1730340688889"></p>
+			<ul>
+				<li>清空内部轮廓线 可在保留dxf定义的外轮廓的同时，清除dxf定义的挖空/槽</li>
+				<li>矩形 则相反，保留内部挖空/槽，将外轮廓恢复为默认的矩形</li>
+				<li>矩形1 无论外轮廓还内部轮廓都清除，还原默认</li>
+			</ul>
+			<p><img src="image/云熙笔记/1730340616278.png" alt="1730340616278">这几个都是根据板件的边界创建内切图形，替换原有的矩形板件</p>
+			<p><img src="image/云熙笔记/1730340947457.png" alt="1730340947457"><img src="image/云熙笔记/1730340964322.png"
+					alt="1730340964322"></p>
+			<h3 id="%E5%9C%86%E8%A7%92-%E5%80%92%E8%A7%92-%E5%88%87%E8%A7%92" tabindex="-1">圆角 倒角 切角</h3>
+			<p><img src="image/云熙笔记/1730514604536.png" alt="1730514604536"></p>
+			<p><img src="image/云熙笔记/1730515232115.png" alt="1730515232115"></p>
+			<p><img src="image/云熙笔记/1730515284113.png" alt="1730515284113"></p>
+			<p><img src="image/云熙笔记/1730515385504.png" alt="1730515385504"></p>
+			<h4 id="%E5%88%87%E8%A7%92%E6%9F%9C%EF%BC%88%E6%95%B4%E6%9F%9C%E6%96%9C%E5%88%87%EF%BC%89" tabindex="-1">
+				切角柜（整柜斜切）</h4>
+			<p>多选板件（横板），使用倒角</p>
+
+			<h3 id="%E5%B1%9E%E6%80%A7%E9%9D%A2%E6%9D%BF%E7%9A%84%E7%BC%96%E8%BE%91%E5%BD%A2%E7%8A%B6" tabindex="-1">
+				属性面板的编辑形状</h3>
+			<p><img src="image/云熙笔记/1730527959274.png" alt="1730527959274"><img src="image/云熙笔记/1730527975476.png"
+					alt="1730527975476"></p>
+			<h2 id="%E5%B8%83%E5%B1%80%E5%B7%A5%E5%85%B7" tabindex="-1">布局工具</h2>
+			<p><img src="image/云熙笔记/1730341109922.png" alt="1730341109922"></p>
+			<p>柜体对齐，先选择各个柜体的其中一块板件，然后选择对齐方式</p>
+			<h3 id="%E7%BB%84%E5%90%88" tabindex="-1">组合</h3>
+			<p>为两个独立柜体的相邻板件创建五金加固件连接</p>
+			<h4 id="%E5%A6%82%E4%BD%95%E6%8E%A7%E5%88%B6%E7%BB%84%E5%90%88%E6%97%B6%E7%94%9F%E6%88%90%E7%9A%84%E5%8A%A0%E5%9B%BA%E4%BB%B6%E6%95%B0%E9%87%8F%E7%AD%89"
+				tabindex="-1">如何控制组合时生成的加固件数量等</h4>
+			<p>待详</p>
+			<h3 id="%E6%B7%BB%E5%8A%A0%E6%9F%9C%E4%BD%93%E6%97%B6%E7%9A%84%E5%AE%9A%E4%BD%8D" tabindex="-1">添加柜体时的定位
+			</h3>
+			<p>在添加新柜体之前，选择已有柜体的某个板件，则新增的柜体会紧邻该板件，即将该板件作为临时工作平面挤出一个体量并封闭出柜体框架</p>
+			<p>在属性面板中，位置Z即柜体的底高度，Y则是从柜体前面起算从Front视平面后退的距离</p>
+			<h3 id="%E5%88%A0%E9%99%A4%E6%9F%9C%E4%BD%93%E5%90%8E%E7%9A%84%E7%A9%BA%E4%BD%93%E9%87%8F" tabindex="-1">
+				删除柜体后的空体量</h3>
+			<p>直接在布局中点删除柜体，不会残留有体量，而点选板件逐个delete，最终会有留下一个体量，可以继续在二维视图通过空间分割继续添加层/立板等。相当于重构。</p>
+			<h2 id="%E6%9D%BF%E4%BB%B6%E5%B7%A5%E5%85%B7%E6%A0%8F" tabindex="-1">板件工具栏</h2>
+			<p><img src="image/云熙笔记/1730342917110.png" alt="1730342917110"></p>
+			<p>在体量上创建板件后，如果直接点击另一个板件创建指令，等于撤销上一次操作，重新执行新操作</p>
+			<p>要在二维视图点击空白处，确认上次指令，再选择空间，执行下一个板件创建指令，才能叠加操作</p>
+			<p>但如果是同一指令连续点击，则是正常的叠加操作</p>
+			<h3 id="%E6%89%B9%E9%87%8F%E4%BF%AE%E6%94%B9" tabindex="-1">批量修改</h3>
+			<p><img src="image/云熙笔记/1730342980985.png" alt="1730342980985"></p>
+			<p>可点选多个板件批量修改属性</p>
+			<p>批量改封边和纹理时，需选择“同属性”的板件，</p>
+			<p>如层板、顶底板都是横板，算是同属性，这是考虑到纹理方向等的一致性</p>
+			<p><img src="image/云熙笔记/1730431645574.png" alt="1730431645574"></p>
+			<h3 id="ab%E9%9D%A2" tabindex="-1">AB面</h3>
+			<p><img src="image/云熙笔记/1730507718319.png"
+					alt="1730507718319"> PET门板等区分AB面（表面处理方式不一致）的板件，先点 <code>A-B翻面</code>将板件设为具有AB面区别的板材，在需要时，再
+				<code>翻面</code> 调整让A面还是B面朝外
+			</p>
+			<p>常见的AB面板材有 PET(Polyethylene Terephthalate)：贴完饰面纸后再压贴一层透明PET膜（区别于两面贴三聚氰胺饰面的双饰面板材）。单面覆膜的PET门板容易结构不稳。</p>
+			<pre><code>双饰面可模拟木石皮等纹理，PET色泽鲜艳光感强（塑料膜保护，具耐热性和耐候性）
+有两种：高光PET和哑光PET（&quot;肤感&quot;，抗指纹）
+</code></pre>
+			<p>做了AB面的板材，在生产端导入柜体后不能再手动调 <code>允许翻面</code> 选项，面向需要严格区分</p>
+			<p><img src="image/云熙笔记/1730507570331.png"
+					alt="1730507570331"></p>
+			<h3 id="%E5%BB%B6%E4%BC%B8%E5%B9%B3%E9%BD%90" tabindex="-1">延伸平齐</h3>
+			<p><img src="image/云熙笔记/1730343060955.png" alt="1730343060955"></p>
+			<p>先选乙作为基准，再ctrl加选甲，然后选择平齐方式：将甲的M边对齐乙的n面，</p>
+			<h3 id="%E6%9D%BF%E4%BB%B6%E8%87%AA%E5%AE%9A%E4%B9%89" tabindex="-1">板件自定义</h3>
+			<h4 id="%E7%AB%8B%E6%9D%BF%EF%BC%9A%E4%BE%A7%E6%9D%BF-%E4%B8%AD%E7%AB%8B%E6%9D%BF-%E7%A9%BA%E7%99%BD%E6%9D%BF"
+				tabindex="-1">立板：侧板 中立板 空白板</h4>
+			<p>空白板系不生成孔位和滑槽的板件</p>
+			<p>左中右只是位置区别，左侧间距和右侧间距是相对左/右侧既有板件新建中立板的位置约束</p>
+			<p>自动累积添加是 点一下加一个，自定义则指定生成数量</p>
+			<h4 id="%E6%A8%AA%E6%9D%BF%EF%BC%9A%E9%A1%B6%E6%9D%BF-%E5%B1%82%E6%9D%BF-%E5%BA%95%E6%9D%BF-%E7%A9%BA%E7%99%BD%E6%9D%BF"
+				tabindex="-1">横板：顶板 层板 底板 空白板</h4>
+			<p>基本ditto</p>
+			<p>倾斜角参数用来创建斜层板，负数则后仰，正数则前俯</p>
+			<p>侧隙距离是活动层板才可用的参数，活动层板不与侧板产生孔位连接，只在下端生成层板托连接
+				活动层板与侧板的间隙一般自动设置，必要时才手动修改</p>
+			<h4 id="%E5%89%8D%E6%9D%BF" tabindex="-1">前板</h4>
+			<p><img src="image/云熙笔记/1730363235985.png" alt="1730363235985">
+				前板只有两个接合样式：夹、盖，
+				<img src="image/云熙笔记/1730363274094.png" alt="1730363274094">
+				<img src="image/云熙笔记/1730363346508.png" alt="1730363346508">
+				盖式中需要调整覆盖面宽度，实现四个边的全/半盖等。正数外扩，负数内缩
+			</p>
+			<h4 id="%E8%83%8C%E6%9D%BF" tabindex="-1">背板</h4>
+			<p>两个要点，接合样式和背板拉条</p>
+			<p><img src="image/云熙笔记/1730357153128.png" alt="1730357153128"></p>
+			<h5 id="%E6%8E%A5%E5%90%88%E6%A0%B7%E5%BC%8F" tabindex="-1">接合样式</h5>
+			<h6 id="%E5%88%92%E6%A7%BD%E5%BC%8F" tabindex="-1">划槽式</h6>
+			<p>可带背板
+				<img src="image/云熙笔记/1730358594809.png" alt="1730358594809">
+			</p>
+			<h6 id="%E5%86%85%E5%B5%8C%E5%BC%8F" tabindex="-1">内嵌式</h6>
+			<p>单纯靠固件连接，因此要18厚才能包持侧向钉，也因为够厚，所以不需要另外的拉条加固
+				<img src="image/云熙笔记/1730358808555.png" alt="1730358808555">
+			</p>
+			<h6 id="%E5%85%A8%E7%9B%96%E5%BC%8F" tabindex="-1">全盖式</h6>
+			<p>同理ditto
+				<img src="image/云熙笔记/1730359045338.png" alt="1730359045338">
+			</p>
+			<h6 id="%E4%BB%85%E6%8B%89%E6%9D%A1" tabindex="-1">仅拉条</h6>
+			<p><img src="image/云熙笔记/1730359149538.png" alt="1730359149538"></p>
+			<h6 id="%E8%83%8C%E6%9D%BF%E5%B5%8C%E5%85%A5%E5%9C%A8%E6%A8%AA%2F%E7%BA%B5%E6%8B%89%E6%9D%A1%E4%B9%8B%E9%97%B4"
+				tabindex="-1">背板嵌入在横/纵拉条之间</h6>
+			<p>槽钉结合<br><br>
+				<img src="image/云熙笔记/1730359428406.png" alt="1730359428406">
+				<img src="image/云熙笔记/1730359339377.png" alt="1730359339377"><img src="image/云熙笔记/1730360468580.png"
+					alt="1730360468580">
+			</p>
+			<p>两者区别：纵向加固是中间向两边走（拉条不连侧板）还是从两边向中间走（两端拉条与侧板连接）<br><br>
+				<img src="image/云熙笔记/1730360210395.png" alt="1730360210395"><img src="image/云熙笔记/1730360339481.png"
+					alt="1730360339481"><img src="image/云熙笔记/1730360510872.png" alt="1730360510872"><br>
+				<img src="image/云熙笔记/1730360489497.png" alt="1730360489497">
+				<img src="image/云熙笔记/1730360424854.png" alt="1730360424854">
+			</p>
+			<h6 id="%E8%83%8C%E6%9D%BF%E5%9C%A8%E6%8B%89%E6%9D%A1%E5%90%8E" tabindex="-1">背板在拉条后</h6>
+			<p>背板不到顶，这种情况最少两个拉条；背板依靠滑槽固定，和拉条间没有连接
+				<img src="image/云熙笔记/1730359704339.png" alt="1730359704339">
+				<img src="image/云熙笔记/1730359743265.png" alt="1730359743265">
+				<img src="image/云熙笔记/1730359889031.png" alt="1730359889031">
+			</p>
+			<h6 id="%E8%83%8C%E6%9D%BF%E5%9C%A8h%E5%BD%A2%E6%8B%BC%E6%9D%A1%E4%B8%8A" tabindex="-1">背板在H形拼条上</h6>
+			<p>拉条后置，并在下，用于吊柜<br>
+				<img src="image/云熙笔记/1730360946230.png" alt="1730360946230">
+				<img src="image/云熙笔记/1730361008928.png" alt="1730361008928"><br>
+				拉条前置，并在上，用于地柜<br>
+				<img src="image/云熙笔记/1730361321269.png" alt="1730361321269">
+			</p>
+			<h5 id="%E8%83%8C%E6%9D%BF%E7%9A%84%E5%8E%9A%E5%BA%A6" tabindex="-1">背板的厚度</h5>
+			<p>常见 5 9 18 三种尺寸，背板主要用于装饰、防尘时，5mm足够，有防潮需求时增加厚度，但并非厚就防潮性能好，因为无论厚薄水汽都是逐渐侵入的；当背板有承重需求时，可用18厚</p>
+			<h5 id="%E5%8A%A0%E5%9B%BA%E6%8B%89%E6%9D%A1" tabindex="-1">加固拉条</h5>
+			<p>板厚度和板条宽</p>
+			<h5 id="%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E4%BD%BF%E7%94%A8%E4%BB%80%E4%B9%88%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%83%8C%E6%9D%BF"
+				tabindex="-1">什么情况下使用什么类型的背板</h5>
+			<h4 id="%E5%89%8D%E5%90%8E%E5%88%86%E9%9A%94%E6%9D%BF" tabindex="-1">前后分隔板</h4>
+			<p><img src="image/云熙笔记/1730539835282.png" alt="1730539835282"></p>
+			<p>这个板件类型只在板件选项卡有，自定义板件中没有，位置等要在板件属性调整</p>
+			<h4 id="%E6%A8%AA%E6%9D%BF" tabindex="-1">横板</h4>
+			<h5 id="%E5%B1%82%E6%9D%BF-%E9%A1%B6%E6%9D%BF-%E5%BA%95%E6%9D%BF" tabindex="-1">层板 顶板 底板</h5>
+			<p>层板可以通过顶/底面间距设置来生成顶板、底板，后两者可视为特殊的简化操作</p>
+			<h5 id="%E9%A1%B6%E6%8C%A1%E6%9D%BF" tabindex="-1">顶挡板</h5>
+			<p>挡侧板即挡板后面平躺的条子
+				<img src="image/云熙笔记/1730362389461.png" alt="1730362389461">
+			</p>
+			<p>带左右挡板的最佳实践：在柜体顶部添加一个空体量，用这个空体量生成挡板（挡板的本质是立板，在没有层板阻隔的情况下是通高创建的）
+				<img src="image/云熙笔记/1730362697367.png" alt="1730362697367">
+			</p>
+			<h5 id="%E9%A1%B6%E6%8B%89%E6%9D%A1" tabindex="-1">顶拉条</h5>
+			<p><img src="image/云熙笔记/1730362991790.png" alt="1730362991790">
+				<img src="image/云熙笔记/1730363064190.png" alt="1730363064190">
+				<img src="image/云熙笔记/1730363143325.png" alt="1730363143325">
+			</p>
+			<h4 id="%E5%B7%A6%E5%8F%B3%E6%8C%A1%E6%9D%BF" tabindex="-1">左右挡板</h4>
+			<p>注意软件里的左右都是用柜体自身的参照系</p>
+			<p>在默认情况下，即有侧板时，这个左右挡板是向内弯折的，这不是它们的常规用法<br><br>
+				<img src="image/云熙笔记/1730364450653.png" alt="1730364450653"><br><br>
+				用中立板代替默认的侧板，留出空间，然后生成左右挡板，这样左右挡板就是向外弯折的
+				勾选宽度自适应，系读取可用空间（绿色范围）<br><br>
+				<img src="image/云熙笔记/1730364650125.png" alt="1730364650125">
+			</p>
+			<h4 id="%E8%B8%A2%E8%84%9A%E6%9D%BF" tabindex="-1">踢脚板</h4>
+			<p>在云熙中，踢脚板本质上就是特殊的前/背板，初始情况下，选择的空间面域多高，生成的踢脚就多高，</p>
+			<p>所以即使选择中间的面域，还是会生成，有后踢就是同时生成背板，通过 D D1参数控制内向缩进，</p>
+			<p><img src="image/云熙笔记/1730365393129.png" alt="1730365393129">
+				加固条在柜体较大时自动生成，需要手动生成时去选自动。加固条的前提是前后踢板俱在</p>
+			<p>如果勾选了 有左/右端，就同时生成两侧立板，这个最佳实践参照顶挡板</p>
+			<h4 id="%E5%9C%86%E5%BC%A7%E6%9D%BF" tabindex="-1">圆弧板</h4>
+			<p><img src="image/云熙笔记/1730345251245.png" alt="1730345251245"></p>
+			<p><img src="image/云熙笔记/1730345261358.png" alt="1730345261358"></p>
+			<p>如果选择的类别是一，则前面的 形状（截面轮廓），是横剖面，对应二维视图中的顶面所见，</p>
+			<p>如果选择的是类型二，则形状系纵剖面、</p>
+			<p>参设置-板件-圆弧板</p>
+			<p><img src="image/云熙笔记/1730446548745.png" alt="1730446548745"></p>
+			<h2 id="%E9%85%8D%E4%BB%B6%E5%B7%A5%E5%85%B7%E6%A0%8F" tabindex="-1">配件工具栏</h2>
+			<h3 id="%E9%A1%B6%E9%A5%B0%E7%BA%BF%E4%B8%8E%E7%BD%97%E9%A9%AC%E6%9F%B1" tabindex="-1">顶饰线与罗马柱</h3>
+			<p><img src="image/云熙笔记/1730367268108.png" alt="1730367268108"></p>
+			<p>顶饰线是不生成五金连接的</p>
+			<p><img src="image/云熙笔记/1730367715674.png" alt="1730367715674"></p>
+			<p>搭接逻辑：后创建的受先创建的构件约束（可用空间被压缩）</p>
+
+			<h3 id="%E7%81%AF%E5%B8%A6%E7%81%AF%E6%A7%BD" tabindex="-1">灯带灯槽</h3>
+			<p>首末边距就是起终点与层板端头的距离</p>
+			<p><img src="image/云熙笔记/1730368958605.png" alt="1730368958605"></p>
+			<h4 id="%E5%BC%82%E5%BD%A2%E7%81%AF%E6%A7%BD%EF%BC%9F" tabindex="-1">异形灯槽？</h4>
+			<p>用异形板编辑器的布尔/dxf</p>
+			<h4 id="%E5%B1%82%E6%9D%BF%E4%BE%A7%E9%9D%A2%E5%8A%A0%E7%81%AF%E6%A7%BD" tabindex="-1">层板侧面加灯槽</h4>
+			<p>在灯带选项卡修改所处位置</p>
+			<h3 id="%E7%94%A8%E7%A9%BA%E7%99%BD%E6%A1%86%E6%9E%B6%E5%88%9B%E5%BB%BA%E7%BB%84%E4%BB%B6" tabindex="-1">
+				用空白框架创建组件</h3>
+			<p>利用空间面板的中的锁定尺寸功能，可制作锁定若干参数尺寸的组件</p>
+			<p>注意搭配板件工具栏的 批量修改 工具修改板件的连接方式等</p>
+			<h4 id="%E7%BB%84%E4%BB%B6%E4%B8%AD%E7%9A%84%E5%8F%82%E6%95%B0" tabindex="-1">组件中的参数</h4>
+			<p>待详</p>
+			<h4 id="%E7%BB%84%E4%BB%B6%E4%BF%9D%E5%AD%98%E4%B8%8E%E8%B0%83%E7%94%A8" tabindex="-1">组件保存与调用</h4>
+			<p>做好组件后，导出为组件 .cafs文件，在组件模板库导入即可</p>
+			<h3 id="%E6%A0%BC%E6%9E%B6%E9%85%8D%E4%BB%B6%E5%BA%93" tabindex="-1">格架配件库</h3>
+			<p>选择空间，应用格子架，注意尺寸要求即可</p>
+	
+			<h2 id="%E8%A7%86%E5%9B%BE%E5%B7%A5%E5%85%B7%E6%A0%8F" tabindex="-1">视图工具栏</h2>
+			<h3 id="%E8%A7%86%E5%9B%BE" tabindex="-1">视图</h3>
+			<p><img src="image/拆单工具笔记/1730941467599.png" alt="1730941467599">
+				单独显示2/3d或都显示（分栏）3d刷新用于重置到默认视口（F）</p>
+			<h3 id="%E7%BA%B9%E7%90%86" tabindex="-1">纹理</h3>
+			<p>板件纹理 单块板
+				柜体纹理 整个柜体全部板件
+				框架纹理
+				场景纹理 整个场景所有板件
+				显示隐藏取消纹理（恢复默认）不表</p>
+			<p>抽屉纹理是抽面的，门板同理</p>
+			<p>清空场景 deleteAll
+				板件/柜体的隐藏、隐藏其他、全部显示不表</p>
+			<h4 id="%E6%B7%BB%E5%8A%A0%E5%8E%82%E5%AE%B6%E8%87%AA%E5%B7%B1%E7%9A%84%E7%BA%B9%E7%90%86%2F%E9%A2%9C%E8%89%B2"
+				tabindex="-1">添加厂家自己的纹理/颜色</h4>
+			<p>点击场景纹理，就能看到云熙保存纹理的文件夹，将自己的纹理文件/电子色卡总文件复制到该文件夹即可</p>
+			<p>之后再使用纹理工具就能看到自己的纹理/色卡</p>
+			<h3 id="%E9%A3%8E%E6%A0%BC" tabindex="-1">风格</h3>
+			<p>作用就是将门、抽屉、外框、内架、背板等的纹理作为一个配置组保存，可以复用
+				新增自定义纹理-左下角添加</p>
+			<h2 id="%E5%85%B6%E4%BB%96" tabindex="-1">其他</h2>
+			<h3 id="%E6%95%B4%E4%BD%93%E7%BC%A9%E6%94%BE" tabindex="-1">整体缩放</h3>
+			<p>如果空间没有加锁，可以通过空间尺寸实现整体加宽/拉高</p>
+			<h3 id="%E6%A0%87%E7%AD%BE%E8%AE%BE%E7%BD%AE" tabindex="-1">标签设置</h3>
+			<p>生产端-标签-自动调整</p>
+			<p>部件编号第一个数字表示在哪张大板上，</p>
+			<h4 id="%E8%A3%85%E9%85%8D%E7%BC%96%E5%8F%B7" tabindex="-1">装配编号</h4>
+			<p>配合手机扫码显示的装配模型使用</p>
+			<h4 id="%E5%B0%81%E8%BE%B9%E4%BF%A1%E6%81%AF" tabindex="-1">封边信息</h4>
+			<p>右上角二维码的显示封边厚薄，虚线表示不封边</p>
+
+			<h3 id="%E6%96%87%E5%AD%97%E9%93%A3%E9%9B%95" tabindex="-1">文字铣雕</h3>
+			<p>板件轮廓导出dxf，cad打开，在板件轮廓内添加文字</p>
+			<p>选中cad文字 <code>txtexp</code> 转成闭合轮廓，清理线条，设置轮廓的厚度值</p>
+			<p>然后异形编辑作为dxf导入</p>
+			<p>字体类型，不能有“孤岛”，即挖空的地方不能内部有未挖空的不分包</p>
+			<h3 id="%E6%8B%89%E7%9B%B4%E5%99%A8" tabindex="-1">拉直器</h3>
+			<p>参 工艺说明添加</p>
+			<h2 id="%E6%8F%92%E4%BB%B6" tabindex="-1">插件</h2>
+			<h3 id="%E4%BA%91%E6%B8%B2%E6%9F%93" tabindex="-1">云渲染</h3>
+			<p>需要用到场景插件</p>
+			<h3 id="%E5%BF%AB%E9%80%9F%E5%BB%BA%E6%A8%A1%E6%A8%A1%E5%BC%8F" tabindex="-1">快速建模模式</h3>
+			<p>云熙的智库空间可以用异形编辑器控制空间形状以创建异形柜体，</p>
+			<p>快速建模（需要购买升级）可以用变量参数、表达式，可以快速分割空间来构建框架</p>
+
+			<h1 id="%E7%94%9F%E4%BA%A7%E7%BA%BF%E8%BD%AF%E4%BB%B6" tabindex="-1">生产线软件</h1>
+			<p><img src="image/拆单工具笔记/1731139584698.png" alt="1731139584698"></p>
+			<h2 id="%E6%A0%87%E7%AD%BE" tabindex="-1">标签</h2>
+			<h3 id="%E6%A0%87%E7%AD%BE%E6%9E%84%E6%88%90" tabindex="-1">标签构成</h3>
+			<p>包含订单信息，分拣编号，部件编号（用于回溯大板），装配编号用于装配图对照，</p>
+			<p>条形码：用于加工设备读取，</p>
+			<p>封边信息：<img src="image/拆单工具笔记/1731136085325.png" alt="1731136085325">[left_right_up_down]，虚线=无封边=厚0.0</p>
+			<p>二维码：打包软件扫码用</p>
+			<p>工件图：黑色实心区域即工件在大板上的位置</p>
+			<h3 id="%E6%A0%87%E7%AD%BE%E6%89%93%E5%8D%B0" tabindex="-1">标签打印</h3>
+			<p>排样后，标签-打印全部标签；在工件上右键打印标签，则是只打印单个工件的标签</p>
+			<p>分批次打印标签：数字代表大板序号，用 A-B 控制打印范围，并使用 <code>按板材打印标签</code></p>
+			<p><img src="image/拆单工具笔记/1731136887922.png" alt="1731136887922"></p>
+			<h4 id="%E6%9F%A5%E6%89%BE%E5%B7%A5%E4%BB%B6" tabindex="-1">查找工件</h4>
+			<p>通过工件尺寸查找：输入 <code>a*b</code>，通过部件编号：即板件编号</p>
+			<p>通过二维码编号：扫码获得部件编号</p>
+			<h2 id="%E5%A5%97%E8%89%B2" tabindex="-1">套色</h2>
+			<p>所谓套色首先就是应用各种纹理选项（柜体框架纹理就是不含门板抽屉）</p>
+			<p>拆单时勾选套色，在加工数据输入面板，就会将所板材作颜色区分</p>
+			<p>余料管理可以设置余料的颜色（从↑复制）</p>
+			<h2 id="%E5%88%86%E6%8B%A3%E7%A0%81" tabindex="-1">分拣码</h2>
+			<p>在设计端，可以在柜体属性中给不同柜体指配一个分拣码字母，</p>
+			<p>然后在生产端，标签</p>
+			<p><img src="image/拆单工具笔记/1731120636488.png" alt="1731120636488"></p>
+			<p>字母相同表示属于同一个柜体，方便打包安装</p>
+			<h3 id="%E6%89%93%E5%8C%85%E8%BD%AF%E4%BB%B6%E5%9F%BA%E7%A1%80%E7%94%A8%E6%B3%95" tabindex="-1">打包软件基础用法
+			</h3>
+			<p><code>加载工程文件</code> 导入 .xml 格式排样工程文件，会自动列出所有板件的清单，</p>
+			<p>扫描枪扫描板件标签上的二维码，凡是扫过板件的都会移到下方已扫描的清单栏里。当已扫码的板件差不多可以打一包的时候，点击下一包，弹出打印打包标签窗口，打印出来贴在包装外即可。</p>
+			<p>打印一次打包标签后，当包次涉及的已扫码板件会显示已打包。继续 扫码-打包 的步骤，直至全部打包完成</p>
+			<h4 id="%E6%89%93%E5%8C%85%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85" tabindex="-1">打包软件安装</h4>
+			<p>安装后，用户名输入锁号，即可登录</p>
+			<h4 id="%E5%B7%A5%E8%89%BA%E8%AF%B4%E6%98%8E%E6%B7%BB%E5%8A%A0" tabindex="-1">工艺说明添加</h4>
+			<p>板件-修改属性，将【】并之间的内容粘贴到名称后面</p>
+			<p><img src="image/拆单工具笔记/1731140252427.png" alt="1731140252427"></p>
+			<p>之后正常更新-拆单-排样</p>
+			<blockquote>
+				<p>板边斜切（免拉手） 等工艺也可以用同样的方式标注，无论打包时是否能识别播报，让工厂注意看标签加工即可</p>
+			</blockquote>
+			<h5 id="%E5%B7%A5%E8%89%BA%E8%AF%B4%E6%98%8E%E6%92%AD%E6%8A%A5" tabindex="-1">工艺说明播报</h5>
+			<p><img src="image/拆单工具笔记/1731140418122.png" alt="1731140418122"></p>
+			<p>生产软件输出 pak 文件，拷贝到安装了分拣打包软件的电脑，在打包软件导入，之后用扫码枪扫描对应工件会播报【】之中的内容</p>
+			<p>播报是为了在打包前提醒检查相关配件是否安装</p>
+			<p><code>保存文件</code> 保存当前的打包记录 pak，</p>
+			<h4 id="%E6%A0%87%E7%AD%BE%E8%AE%BE%E7%BD%AE%E7%AD%89" tabindex="-1">标签设置等</h4>
+			<p><img src="image/拆单工具笔记/1731141394426.png" alt="1731141394426"></p>
+			<p>首次导入数据后，可以在排样文件自动生成的标签后添加自定义的标签行</p>
+			<p><img src="image/拆单工具笔记/1731141491858.png" alt="1731141491858"> <img src="image/拆单工具笔记/1731141480788.png"
+					alt="1731141480788"></p>
+			<p>以上设置需要 <img src="image/拆单工具笔记/1731141433678.png" alt="1731141433678"> 切换一下tab触发更新</p>
+			<p>打包标签打印要现有打包数据才行</p>
+			<p>导出excel用于将文件中所有板件的打包状态输出清单</p>
+			<p>自动保存设置，会在安装目录自动创建临时文件夹</p>
+			<h4 id="%E6%9D%A1%E7%A0%81%E6%89%AB%E6%8F%8F%E5%8C%BA" tabindex="-1">条码扫描区</h4>
+			<p><img src="image/拆单工具笔记/1731141858153.png" alt="1731141858153"></p>
+			<h5 id="%E5%88%86%E6%8B%A3%E6%9D%A1%E4%BB%B6%E4%B8%8E%E5%88%86%E6%8B%A3%E4%BD%8D" tabindex="-1">分拣条件与分拣位
+			</h5>
+			<p>点击 <code>分拣</code> 根据条件创建分拣位，点亮分拣位=筛出对应范围的板件清单</p>
+			<p><img src="image/拆单工具笔记/1731143173479.png" alt="1731143173479"></p>
+			<p>分拣位就是将板件分批处理时的细分层级</p>
+			<p><img src="image/拆单工具笔记/1731142294404.png" alt="1731142294404"></p>
+			<p>分拣的板不全时，可以勾选占用，此时点击清空，被占用的板件清单项会保留在界面中</p>
+			<p><img src="image/拆单工具笔记/1731142489420.png" alt="1731142489420"><img src="image/拆单工具笔记/1731142526194.png"
+					alt="1731142526194"></p>
+			<p>将清单中的条码信息复制到扫描区输入框，系模拟扫码枪扫码，播报相关信息</p>
+			<p>双击清单中的项目，可撤回分拣(=删除项)</p>
+			<p>点击 <code>开始打包</code> 后，再用编号模拟扫描会播报 <code>已扫描</code>，显示已打包的则不可撤回，</p>
+			<p>点击下一包或扫描右上角二维码<img src="image/拆单工具笔记/1731146267824.png" alt="1731146267824"></p>
+			<p><img src="image/拆单工具笔记/1731142786027.png" alt="1731142786027"></p>
+			<h4 id="%E5%88%86%E6%8B%A3%E8%AF%A6%E8%A7%A3" tabindex="-1">分拣详解</h4>
+			<p><img src="image/拆单工具笔记/1731143011442.png" alt="1731143011442"></p>
+			<p>车间预先划出位置，扫描分拣板件，识别是否需要安装配件或二次加工，之后将板件放置在对应编号的位置上</p>
+			<h5 id="%E5%8D%95%E4%B8%80%E8%AE%A2%E5%8D%95%E5%88%86%E6%8B%A3%E6%89%93%E5%8C%85" tabindex="-1">单一订单分拣打包
+			</h5>
+			<p>一个订单只有一个柜子，可以跳过分拣，直接开始打包</p>
+			<p>一个订单有多个柜子，分拣条件选择订单号和柜体名，然后按分拣位分别分拣打包</p>
+			<h6 id="%E5%88%86%E6%8B%A3" tabindex="-1">分拣</h6>
+			<p>在条码扫描区输入清单项编号/扫描工件二维码时，当前工件状态显示为已分拣，即此件此时应该要配往指定的分拣位置（播报的待加工工艺/待安装配件会有影响）</p>
+			<p>按条件筛出的当前清单项全部分拣完成后，会弹窗提示并要求保存文件（pak）</p>
+			<h6 id="%E6%89%93%E5%8C%85" tabindex="-1">打包</h6>
+			<p>有时分拣是为了确认板件齐全后立即打包，通过打包/下一包配合完成打包，之后打印标签贴上即可</p>
+			<h5 id="%E5%A4%9A%E4%B8%AA%E8%AE%A2%E5%8D%95%E6%B7%B7%E5%8D%95%E5%88%86%E6%8B%A3%E6%89%93%E5%8C%85"
+				tabindex="-1">多个订单混单分拣打包</h5>
+			<p>多个订单用到相同材料，一起排版加工的情况</p>
+			<p>做法是一样的，因为分拣条件可以按订单和柜等多个层级划分处理批次</p>
+			<p>当播报提示 <code>n号分拣位 剩余0块</code> 时，可以先将分拣好的打包（车间位置不够），或者继续分拣最后再打包（车间位置够）</p>
+			<p>清空前先保存文件，（占用），并或导出excel</p>
+			<h4 id="%E6%89%93%E5%8C%85misc" tabindex="-1">打包misc</h4>
+			<p>模糊搜索</p>
+			<h5 id="%E6%89%93%E5%8C%85%E6%97%B6%E8%A1%A5%E6%9D%BF" tabindex="-1">打包时补板</h5>
+			<p><img src="image/拆单工具笔记/1731146352871.png" alt="1731146352871"></p>
+			<p>补充的板件，扫描时会提醒非本批次板件，人工确认是否属于当前订单，然后点击 <code>补板</code> 按钮</p>
+			<p>将光标聚焦于补板条码输入框，扫码或粘贴补板编号</p>
+			<p><img src="image/拆单工具笔记/1731147078836.png" alt="1731147078836"></p>
+			<p>如果板件之前没有被分拣，需要先确认分拣扫描，更新二维码数据到分拣清单，</p>
+			<p>已分拣过的板件，只能打包扫描，</p>
+			<p>分拣打包都有的时候，直接确认，替换二维码，然后点一下分拣位刷新列表数据</p>
+			<h2 id="%E6%89%8B%E5%8A%A8%E6%8E%92%E6%A0%B7" tabindex="-1">手动排样</h2>
+			<p>有需求时（比如要输出特定形状的余料），可以在计算好排样后，手动点击拖拽工件手动排样，然后在右键 <code>手动排样-对齐</code>，还可以旋转工件以改变纹理方向</p>
+			<h3 id="%E8%BD%AC%E7%A7%BB%E5%B7%A5%E4%BB%B6%E5%88%B0%E5%A4%A7%E6%9D%BF" tabindex="-1">转移工件到大板</h3>
+			<p>选中板件，按住鼠标左键不放点击鼠标右键，弹出此窗口后，同时松开鼠标左、右键</p>
+			<p>左键按右侧滚动条，将所选板件放置在有余料的大板上，对齐即可</p>
+			<h3 id="%E6%89%8B%E5%8A%A8%E6%8E%92%E6%A0%B7%E7%9A%84%E5%BF%AB%E6%8D%B7%E9%94%AE" tabindex="-1">手动排样的快捷键
+			</h3>
+			<p><code>CTRL</code> + <code>Ａ</code> | <code>Ｗ</code> | <code>S</code> | <code>D</code> 上下左右对齐</p>
+			<h2 id="%E8%B7%91%E6%9D%BF%E9%A2%84%E9%98%B2" tabindex="-1">跑板预防</h2>
+			<blockquote>
+				<p>应该最后一刀切长边，并且靠大板</p>
+			</blockquote>
+			<p>下刀点（黑色小三角），默认逆时针切割，所以如果是边缘的小板，正确的下刀点，应该遵循下图规律</p>
+			<p><img src="image/拆单工具笔记/1731148783262.png" alt="1731148783262"></p>
+			<h3 id="%E8%B0%83%E6%95%B4%E4%B8%8B%E5%88%80%E7%82%B9%E4%B8%8E%E5%88%87%E5%89%B2%E9%A1%BA%E5%BA%8F"
+				tabindex="-1">调整下刀点与切割顺序</h3>
+			<blockquote>
+				<p>“跑板”：加工时板材跑偏（为什么？小料先切靠近大板的边，之后切两端时，一端受力会让小料有远离大板的倾向）</p>
+			</blockquote>
+			<p>在排样上右键，<code>下刀点调整</code></p>
+			<p>如果是边缘的小板最后切，小板与大板分离时也容易跑板，</p>
+			<p>这时在排样上右键， <code>切割顺序调整</code> ：提前或后延，将边缘的小板先与内部的大板分离</p>
+			<p>排样的板上标识，第一行第一个数字就是切割顺序（有些版本没有）</p>
+			<h2 id="%E5%88%80%E8%BD%A8%E7%9B%B8%E5%85%B3" tabindex="-1">刀轨相关</h2>
+			<p>排样后，输出刀轨，即 .nc 文件</p>
+			<h3 id="%E8%B7%AF%E5%BE%84%E6%A8%A1%E6%8B%9F" tabindex="-1">路径模拟</h3>
+			<p>点击模拟，选择刀轨文件</p>
+			<p><img src="image/拆单工具笔记/1731135355872.png" alt="1731135355872"></p>
+			<p>同一个颜色表示用的是同一种刀，实线为加工路径，虚线为快速移动路径</p>
+			<h4 id="%E8%B7%AF%E5%BE%84%E6%A8%A1%E6%8B%9F%E8%AE%A1%E7%AE%97%E6%A7%BD%E8%BE%B9%E8%B7%9D" tabindex="-1">
+				路径模拟计算槽边距</h4>
+			<p><img src="image/拆单工具笔记/1731147934696.png" alt="1731147934696"></p>
+			<p>槽距离上/右边缘：切割路径坐标值-槽坐标值-切割刀半径-开槽刀半径=槽距边值</p>
+			<p>槽距离下/左边缘：槽坐标值-切割路径坐标值-切割刀半径-开槽刀半径=槽距边值</p>
+			<p><img src="image/拆单工具笔记/1731148046150.png" alt="1731148046150"></p>
+			<p>坐标就是 CNC 加工代码中的 XY 值 <img src="image/拆单工具笔记/1731148099752.png" alt="1731148099752"></p>
+			<h2 id="%E5%A4%9A%E5%A4%B4%E9%92%BB%E5%92%8C%E6%8E%92%E9%92%BB%E6%89%93%E5%AD%94" tabindex="-1">多头钻和排钻打孔
+			</h2>
+			<p>右键多头钻打孔设置/排钻打孔设置，如果正反面都没有孔位，说明不是用~打孔</p>
+			<p>多头钻就是有若干个 Tn 刀具设置，</p>
+			<p><img src="image/拆单工具笔记/1731134942605.png" alt="1731134942605">如果不是以排钻方式导入，就是以多头钻加工</p>
+			<h3 id="%E5%88%80%E5%85%B7%E5%92%8C%E6%8E%92%E9%92%BB%E8%AE%BE%E7%BD%AE" tabindex="-1">刀具和排钻设置</h3>
+			<p><img src="image/拆单工具笔记/1731139730033.png" alt="1731139730033"></p>
+			<p><img src="image/拆单工具笔记/1731139768628.png" alt="1731139768628"></p>
+			<p><img src="image/拆单工具笔记/1731139782336.png" alt="1731139782336"></p>
+			<p><img src="image/拆单工具笔记/1731139797878.png" alt="1731139797878"></p>
+			<p><img src="image/拆单工具笔记/1731139716111.png" alt="1731139716111"></p>
+			<h2 id="%E5%AF%BC%E5%87%BA%E9%A2%86%E6%96%99%E5%8D%95%E5%92%8C%E5%B0%81%E8%BE%B9%E7%94%A8%E9%87%8F"
+				tabindex="-1">导出领料单和封边用量</h2>
+			<p>生产端软件，输出：<img src="image/拆单工具笔记/1731138304182.png" alt="1731138304182"></p>
+			<p>领料单是按排版加工次序依次生成；封边条用量要额外 * 1.2 （避免购买的封边条不足量、封边条首末端要切掉不用）</p>
+			<p>板材额外+量：在必要时，多预一块，避免售后补板（加工问题、数据错误、运输或安装损坏）要另外找材料</p>
+			<h1 id="%E6%9D%BF%E6%9D%90%E7%9F%A5%E8%AF%86" tabindex="-1">板材知识</h1>
+			<p><img src="image/拆单工具笔记/1730943790111.png" alt="1730943790111"></p>
+			<h2 id="%E9%97%A8%E6%9D%BF%E6%9D%90%E6%96%99" tabindex="-1">门板材料</h2>
+			<p>真空吸塑模压门板（密度板+厚PVC膜烤粘）
+				包覆门板（四边框+中间芯板）
+				实木门板（可有扣线【moulding】）</p>
+			<h1 id="%E5%85%A8%E5%B1%8B%E5%AE%9A%E5%88%B6%E7%BB%93%E6%9E%84%E7%9F%A5%E8%AF%86" tabindex="-1">全屋定制结构知识
+			</h1>
+			<p>四大项：尺寸、功能组织、结构、花色（+造型+纹路方向），要点：秩序、功能件、环境因素考虑、空间利用效率</p>
+			<p>三区：
+				650-2100 上肢活动半径，高频使用【挂、搁、摆】
+				650- 下蹲操作区，存放较重、不常用物品【地】
+				2100-2800 长期不用物品，重量较轻【吊】</p>
+			<h2 id="%E4%BE%A7%E6%9D%BF%E3%80%81%E9%A1%B6%E5%BA%95%E6%9D%BF%E3%80%81%E5%B1%82%E6%9D%BF%E7%BB%93%E6%9E%84"
+				tabindex="-1">侧板、顶底板、层板结构</h2>
+			<p>侧板分普通侧板和装饰侧板，
+				普通侧板就是左右和中立，中立又分落地与否
+				双18结构装饰侧板，就是两块立板盖一个装饰前板，</p>
+			<p>顶底板，主要是夹、盖关系，专业术语是侧包顶、顶包侧，还有中侧包顶就是顶板被中侧板断开的情况</p>
+			<h3 id="%E5%B1%82%E6%9D%BF" tabindex="-1">层板</h3>
+			<p>分固定和活动，固定层板在分割空间之外还有稳固柜体的作用，
+				圆弧层板:标准弧度R 20 50 100 200 300 500 800<br>
+				<img src="image/云熙笔记/1730422967908.png" alt="1730422967908"><br>
+				活层=上下间距可调整
+				横隔板：与活层板有区别，它的作用是分割背板，解决背板超宽等问题
+				斜层板 意义是通过斜置增加置物深度，深度限制200-600，如果是前低后高，需要在前沿加挡板
+			</p>
+			<p><img src="image/云熙笔记/1730423487731.png" alt="1730423487731"><br>
+				层板厚度18 25（9mm的不适应做层板）</p>
+			<h3 id="%E5%9F%BA%E6%9C%AC%E8%BF%9E%E6%8E%A5" tabindex="-1">基本连接</h3>
+			<p><img src="image/云熙笔记/1730421947411.png" alt="1730421947411"></p>
+			<p>普通的顶底板，用三合一和侧板连接
+				18底板+70踢脚的结构，用拐角件固定
+				圆弧顶底板 只能做50厚</p>
+			<h2 id="%E6%8C%89%E9%97%A8%E5%88%86%E6%9F%9C%EF%BC%9A%E8%B6%9F%E3%80%81%E6%8E%A9" tabindex="-1">按门分柜：趟、掩
+			</h2>
+			<p>底柜最高2400
+				趟门
+				侧板18，
+				背板标准9特殊8/18/25，
+				层板标准18，内进一般105（留推拉门位）
+				顶底板标准18，
+				脚线 标准高70 18厚 最大宽 1200
+				掩门
+				层板18 内进一般5
+				余同
+				注意功能件与铰链的避让、拉手与柜体的冲突</p>
+			<h3 id="%E9%97%A8%E6%9D%BF" tabindex="-1">门板</h3>
+			<p>铰链数量，门高每500一个铰链，总数1+h/500<br><br>
+				<img src="image/云熙笔记/1730424647534.png" alt="1730424647534">
+			</p>
+			<p>单扇门宽L=(柜体洞口宽W+（门扇数-1）*门竖框宽A)/门扇数
+				当然四扇门时根据中间两扇门的闭合关系，竖框宽 *2 或 *3 都有可能</p>
+			<p><img src="image/云熙笔记/1730424994185.png" alt="1730424994185">
+				<img src="image/云熙笔记/1730424979807.png" alt="1730424979807">
+			</p>
+			<p>平板门即无造型，刀型门即前板面有雕刻，木框门即四边带芯<br><br>
+				<img src="image/云熙笔记/1730425056572.png" alt="1730425056572">
+				<img src="image/云熙笔记/1730425072376.png" alt="1730425072376">
+				<img src="image/云熙笔记/1730425141443.png" alt="1730425141443">
+				<img src="image/云熙笔记/1730425166342.png" alt="1730425166342">
+				<img src="image/云熙笔记/1730425193317.png" alt="1730425193317">
+			</p>
+			<h2 id="%E9%85%8D%E4%BB%B6%EF%BC%9A%E5%8A%9F%E8%83%BD%E4%BB%B6%E3%80%81%E5%8A%9F%E8%83%BD%E4%BA%94%E9%87%91"
+				tabindex="-1">配件：功能件、功能五金</h2>
+			<p>功能件是指各类抽屉，抽屉、鞋抽、时尚抽、多宝阁、裤抽等
+				功能五金是衣篮等，有时包括翻板床（正翻/侧翻）</p>
+			<h3 id="%E5%8A%9F%E8%83%BD%E4%BB%B6%EF%BC%9A%E6%8A%BD" tabindex="-1">功能件：抽</h3>
+			<p>盒式抽屉=（抽斗[三+底]+轨道）+（抽面+拉手）
+				标宽 W=364mm W=464mm W=564mm W=764mm
+				非标宽度： W＜564mm， 564mm＜W≤900mm</p>
+			<p>多宝阁=格子抽斗 裤抽=条斗<br><br>
+				<img src="image/云熙笔记/1730425499670.png" alt="1730425499670">
+				<img src="image/云熙笔记/1730425512510.png" alt="1730425512510">
+				<br><br>
+				标准宽：W=564mm W=764mm
+				非标宽度： 564＜W＜764mm， 764mm＜W≤964mm
+			</p>
+			<p>抽屉一般都是18板，多宝阁的隔板是9mm，</p>
+			<h4 id="%E8%BD%A8%E9%81%93" tabindex="-1">轨道</h4>
+			<p>默认为三节轨配置</p>
+			<p>普通轨道、阻尼轨道、反弹轨道
+				轨道占用空间宽度：27mm/副
+				普通轨道：L=200mm
+				阻尼轨道：L=300mm/350mm/400mm/450mm/500mm
+				反弹轨道：300mm</p>
+			<h3 id="%E5%8A%9F%E8%83%BD%E4%BA%94%E9%87%91" tabindex="-1">功能五金</h3>
+			<p><img src="image/云熙笔记/1730425749920.png" alt="1730425749920"></p>
+			<p>侧翻翻板床（宽900mm<em>高2000mm 宽1200mm</em>高2000m）
+				正翻翻板床（宽900mm<em>高2000mm 宽1200mm</em>高2000mm）
+				床垫的话，床的总宽、高各减20mm
+				<img src="image/云熙笔记/1730426070254.png" alt="1730426070254">
+			</p>
+			<h2 id="misc-1" tabindex="-1">misc</h2>
+			<h3 id="%E5%B0%81%E6%9D%BF" tabindex="-1">封板</h3>
+			<p>置于柜体侧边及顶上的板件，用于调节安装缝隙及墙面不直
+				加工范围：50mm≤W≤1200mm；50mm≤H≤2400mm.
+				封板要突出柜体安装时需配辅助板</p>
+			<h3 id="%E7%BD%97%E9%A9%AC%E6%9F%B1" tabindex="-1">罗马柱</h3>
+			<p>装饰板的欧式线条，起收口条收饰作用，一般需要配置见光板
+				加工范围：W=50mm、60mm、70mm、75mm, 500mm≤H≤2700mm.</p>
+			<h3 id="%E5%B8%BD%E6%AA%90%E7%BA%BF" tabindex="-1">帽檐线</h3>
+			<p>即顶饰线，最长可做2400mm，需现场裁切拼接
+				不同顶线的高度和外飘尺寸可能不一样</p>
+			<h2 id="%E7%BB%98%E5%9B%BE%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9" tabindex="-1">绘图注意事项</h2>
+			<p>三视图：俯视图（剖）、正视图、侧视图（剖），
+				明细栏：物料、花色</p>
+			<p>设计图不要出现饰品，易造成拆单错误
+				门板一定注明掩门开启方向或趟门摆放方式</p>
+
+
+
+		</main>
+	</div>
+</body>
+
+</html>
